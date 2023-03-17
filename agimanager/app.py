@@ -1,8 +1,8 @@
 
 #Fichier d'initialisation de l'app flask
 from flask import Flask, render_template
-from agilean import agilean_bp
-from agilog import agilog_bp
+from agimanager.agilean.agilean import agilean_bp
+from agimanager.agilog.agilog import agilog_bp
 
 app = Flask(__name__)
 
