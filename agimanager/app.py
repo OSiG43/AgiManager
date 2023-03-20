@@ -3,6 +3,7 @@
 from flask import Flask, render_template
 from agimanager.agilean.agilean import agilean_bp
 from agimanager.agilog.agilog import agilog_bp
+from agimanager.db_utils import init_db
 
 app = Flask(__name__)
 
@@ -19,3 +20,4 @@ def accueil():
 #On lance l'application
 if __name__ == '__main__':
     app.run(debug=True, port=5678)
+    init_db()
