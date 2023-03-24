@@ -27,5 +27,3 @@ def getPiecesKit(id_kit) :
     cur.execute(f"SELECT id_kit, id_piece, quantié FROM Composition_kit WHERE id_kit = {id_kit}")
     lignes = cur.fetchall()
 
-
-
