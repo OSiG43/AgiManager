@@ -2,12 +2,19 @@ import os
 import sqlite3
 
 from flask import g
-
 from agimanager.app import app
+
+
 
 DATABASE = 'database.db'
 
 
+# Pour l'utiliser:
+"""
+db = get_db()
+cur = db.execute(La requete SQL)
+et après on peut manipuler le cur comme d'habitude (cur.fetchall(), cur.fetchone(), etc...)
+"""
 def get_db():
     # on vérifie si la base de données est déjà ouverte
     # g est un objet qui est stocké dans le contexte de l'app flask
@@ -36,10 +43,12 @@ def close_connection(exception):
 # Si elle n'existe pas on la crée en utilisant le fichier schema.sql qui contient
 # les requêtes pour créer les tables
 def init_db():
+    print("Init of the database")
     if os.path.exists(DATABASE):
         return
+    print("Creation of the database")
     with app.app_context():
-        db = get_db()
+        db = sqlite3.connect(DATABASE)
         with app.open_resource('schema.sql', mode='r') as f:
             db.cursor().executescript(f.read())
         db.commit()
