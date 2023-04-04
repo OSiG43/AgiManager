@@ -12,6 +12,7 @@
 </head>
 
 <body>
+<div class="wrapper">
 <nav class="navbar">
     <ul class="navbar-menu">
         <li class="navbar-item navbar-header">
@@ -51,10 +52,20 @@
         </li>
     </ul>
 </nav>
+
+<div class="content">
+    {% block content %}
+    {% endblock %}
+</div>
+
+
+</div>
 </body>
 </html>
-<script>
-    {% block script %}
-    {% endblock %}
 
+<script>
+    // Script commun à toutes les pages
 </script>
+
+{% block script %}
+{% endblock %}
