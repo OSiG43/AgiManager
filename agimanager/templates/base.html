@@ -7,50 +7,50 @@
     <link rel="stylesheet" href="../static/main.css" type="text/css" >
     <link rel="stylesheet" href="../static/navbar.css" type="text/css" >
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato&display=swap">
     <title>AgiManager</title>
-    <link rel="shortcut icon" herf="" type="image/x-icon">
 </head>
 
 <body>
-    <nav class="navbar">
-      <ul class="navbar-menu">
-        <li class="navbar-item logo">
-          <a href="{{url_for('accueil')}}" class="navbar-link">
-            <span class="navbar-title">AgiManager</span>
-          </a>
+<nav class="navbar">
+    <ul class="navbar-menu">
+        <li class="navbar-item navbar-header">
+            <a href="{{url_for('accueil')}}" class="navbar-link">
+                <span class="navbar-title">AgiManager</span>
+            </a>
         </li>
         <li class="navbar-item">
-          <a href="{{url_for('agilean.test')}}" class="navbar-link">
-            <i class="ti ti-car"></i>
-            <span class="navbar-title">Agilean</span>
-          </a>
-        </li>
-                    <li class="navbar-item">
-          <a href="{{url_for('agilog.test')}}" class="navbar-link">
-            <i class="ti ti-box-seam"></i>
-            <span class="navbar-title">Agilog vers Agilean</span>
-          </a>
+                <a href="{{url_for('agilean.test')}}" class="navbar-link">
+                    <i class="ti ti-car"></i>
+                    <span class="navbar-title">Agilean</span>
+                </a>
         </li>
         <li class="navbar-item">
-          <a href="{{url_for('agilog.test')}}" class="navbar-link">
-            <i class="ti ti-puzzle"></i>
-            <span class="navbar-title">Agilog vers Agigreen</span>
-          </a>
+            <a href="{{url_for('agilog.test')}}" class="navbar-link">
+                <i class="ti ti-box-seam"></i>
+                <span class="navbar-title">Agilog vers Agilean</span>
+            </a>
         </li>
         <li class="navbar-item">
-          <a href="{{url_for('agigreen.test')}}" class="navbar-link">
-            <i class="ti ti-building-factory-2"></i>
-            <span class="navbar-title">Agigreen</span>
-          </a>
+            <a href="{{url_for('agilog.test')}}" class="navbar-link">
+                <i class="ti ti-puzzle"></i>
+                <span class="navbar-title">Agilog vers Agigreen</span>
+            </a>
         </li>
         <li class="navbar-item">
-          <a href="{{url_for('accueil')}}" class="navbar-link">
-            <i class="ti ti-home-2"></i>
-            <span class="navbar-title">Accueil</span>
-          </a>
+            <a href="{{url_for('agigreen.test')}}" class="navbar-link">
+                <i class="ti ti-building-factory-2"></i>
+                <span class="navbar-title">Agigreen</span>
+            </a>
         </li>
-      </ul>
-    </nav>
+        <li class="navbar-item">
+            <a href="{{url_for('accueil')}}" class="navbar-link">
+                <i class="ti ti-home-2"></i>
+                <span class="navbar-title">Accueil</span>
+            </a>
+        </li>
+    </ul>
+</nav>
 </body>
 </html>
 <script>
