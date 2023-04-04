@@ -10,6 +10,7 @@ app = Flask(__name__)
 #On importe les vues
 app.register_blueprint(agilog_bp, url_prefix='/agilog')
 app.register_blueprint(agilean_bp, url_prefix='/agilean')
+app.register_blueprint(agilean_bp, url_prefix='/agigreen')
 
 
 @app.route('/')
