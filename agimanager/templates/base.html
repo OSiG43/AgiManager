@@ -1,30 +1,60 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../static/main.css" type="text/css" >
+    <link rel="stylesheet" href="../static/navbar.css" type="text/css" >
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato&display=swap">
     <title>AgiManager</title>
-
 </head>
 
-<header>
-    <ul>
-        <li><a href="{{url_for('accueil')}}">Accueil</a></li>
-        <li><a href="{{url_for('agilog.test')}}">Agilog</a></li>
-        <li><a href="{{url_for('agilean.test')}}">Agilean</a></li>
-    </ul>
-</header>
-
 <body>
-    {% block content %}
-    {% endblock %}
+<nav class="navbar">
+    <ul class="navbar-menu">
+        <li class="navbar-item navbar-header">
+            <a href="{{url_for('accueil')}}" class="navbar-link">
+                <span class="navbar-title">AgiManager</span>
+            </a>
+        </li>
+        <li class="navbar-item">
+                <a href="{{url_for('agilean.test')}}" class="navbar-link">
+                    <i class="ti ti-car"></i>
+                    <span class="navbar-title">Agilean</span>
+                </a>
+        </li>
+        <li class="navbar-item">
+            <a href="{{url_for('agilog.test')}}" class="navbar-link">
+                <i class="ti ti-box-seam"></i>
+                <span class="navbar-title">Agilog vers Agilean</span>
+            </a>
+        </li>
+        <li class="navbar-item">
+            <a href="{{url_for('agilog.test')}}" class="navbar-link">
+                <i class="ti ti-puzzle"></i>
+                <span class="navbar-title">Agilog vers Agigreen</span>
+            </a>
+        </li>
+        <li class="navbar-item">
+            <a href="{{url_for('agigreen.test')}}" class="navbar-link">
+                <i class="ti ti-building-factory-2"></i>
+                <span class="navbar-title">Agigreen</span>
+            </a>
+        </li>
+        <li class="navbar-item">
+            <a href="{{url_for('accueil')}}" class="navbar-link">
+                <i class="ti ti-home-2"></i>
+                <span class="navbar-title">Accueil</span>
+            </a>
+        </li>
+    </ul>
+</nav>
 </body>
-
+</html>
 <script>
     {% block script %}
     {% endblock %}
-</script>
 
-</html>
+</script>

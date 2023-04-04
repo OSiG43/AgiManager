@@ -1,0 +1,128 @@
+/*
+** CSS navbar
+*/
+:root {
+  --navbar-background-color: rgb(245, 219, 203);
+  --navbar-item-hovered-color:white;
+  --navbar-separator-color: rgb(239, 196, 169);
+  --navbar-icon-color: rgb(228, 58, 72);
+  --navbar-text-color: rgb(78, 103, 102);
+  --navbar-header-text-color: rgb(245, 219, 203);
+  --navbar-vitesse: .2s;
+  --primary-color: #9175de;
+  --navbar-header-background-color: rgb(237, 123, 132);
+}
+
+body{
+  padding:0px;
+  margin: 0px;
+  font-family: 'Lato', sans-serif;
+}
+
+.navbar {
+  width:4rem;
+  position:fixed;
+  top:0px;
+  left:0px;
+  bottom:0px;
+  background:var(--navbar-background-color);
+  box-shadow: rgba(12,43, 30, 0.2) 0 4px 14px;
+  transition: width var(--navbar-vitesse) ease;
+  z-index: 1
+}
+
+.navbar:hover {
+  width:15rem;
+}
+
+.navbar-menu {
+  list-style: none;
+  padding:0;
+  margin:0;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  height:100%;
+}
+
+.navbar-item {
+  width: 100%;
+  border-bottom:solid 3px var(--navbar-separator-color);
+  transition: background-color var(--navbar-vitesse);
+}
+
+.navbar-item:hover {
+  background-color:var(--navbar-item-hovered-color);
+}
+
+.navbar-item:last-child {
+  margin-top: auto ;
+}
+
+.navbar-link {
+  display:flex;
+  align-items: center;
+  height:4rem;
+  font-size:1rem;
+  width:100%;
+  text-decoration: none;
+}
+
+
+.navbar-link i{
+    margin-left: 1rem;
+    margin-right: 0.6rem;
+    font-size: 2rem;
+    color:var(--navbar-icon-color);
+}
+
+.navbar-title {
+  color:var(--navbar-text-color);
+}
+
+.navbar:not(:hover) .navbar-title {
+  display:none;
+}
+
+.navbar-header {
+    background:var(--navbar-header-background-color);
+}
+
+.navbar-header .navbar-title {
+  font-size:1.5rem;
+  font-weight:bold;
+  margin-left:1.5rem;
+  margin-right: auto;
+  margin-left: auto;
+  font-style: italic;
+  color:var(--navbar-header-text-color);
+}
+
+/*
+** RESPONSIVE
+*/
+
+@media only screen and (max-width:800px) {
+  .navbar {
+    top:auto;
+    width:100%;
+    bottom:0px;
+  }
+
+  .navbar:hover {
+    width:100%;
+  }
+
+  .navbar-menu {
+    flex-direction: row;
+  }
+
+
+  .navbar:hover .navbar-title {
+    display:none;
+  }
+
+  .navbar-link {
+    justify-content: center;
+  }
+}
