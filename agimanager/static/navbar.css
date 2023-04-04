@@ -11,6 +11,7 @@
   --navbar-vitesse: .2s;
   --primary-color: #9175de;
   --navbar-header-background-color: rgb(237, 123, 132);
+  --navbar-width: 4rem;
 }
 
 body{
@@ -19,8 +20,12 @@ body{
   font-family: 'Lato', sans-serif;
 }
 
+.content{
+    margin-left: var(--navbar-width);
+}
+
 .navbar {
-  width:4rem;
+  width:var(--navbar-width);
   position:fixed;
   top:0px;
   left:0px;
@@ -49,6 +54,7 @@ body{
   width: 100%;
   border-bottom:solid 3px var(--navbar-separator-color);
   transition: background-color var(--navbar-vitesse);
+
 }
 
 .navbar-item:hover {
@@ -66,6 +72,11 @@ body{
   font-size:1rem;
   width:100%;
   text-decoration: none;
+
+  /*Pour éviter que le texte change de ligne pendant l'ouverture de la navbar*/
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 
@@ -107,6 +118,10 @@ body{
     top:auto;
     width:100%;
     bottom:0px;
+  }
+
+  .content{
+    margin-left: 0px;
   }
 
   .navbar:hover {
