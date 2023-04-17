@@ -16,13 +16,6 @@ CREATE TABLE IF NOT EXISTS "Commande_piece" (
 	"quantite"	INTEGER,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
-DROP TABLE IF EXISTS "Composition_Kit";
-CREATE TABLE IF NOT EXISTS "Composition_Kit" (
-	"id_Kit"	INTEGER NOT NULL UNIQUE,
-	"id_piece"	INTEGER NOT NULL UNIQUE,
-	"quantitee"	INTEGER,
-	PRIMARY KEY("id_Kit")
-);
 DROP TABLE IF EXISTS "Erreur";
 CREATE TABLE IF NOT EXISTS "Erreur" (
 	"id"	INTEGER NOT NULL UNIQUE,
@@ -51,5 +44,11 @@ CREATE TABLE IF NOT EXISTS "Stock_Agilog" (
 	"seuil_commande"	INTEGER,
 	"id_piece"	INTEGER,
 	PRIMARY KEY("id")
+);
+DROP TABLE IF EXISTS "Composition_Kit";
+CREATE TABLE IF NOT EXISTS "Composition_Kit" (
+	"id_Kit"	INTEGER NOT NULL,
+	"id_piece"	INTEGER NOT NULL,
+	"quantitee"	INTEGER
 );
 COMMIT;
