@@ -1,17 +1,74 @@
 {% extends "base.html" %}
 
 {% block content %}
-<form>
-    <div class="menu-deroulant">
-    <label for="kit">Sélectionner un kit:</label>
-    <select>
-        <option value="blanc">Aucune sélection</option>
-        <option value="kit1">Kit 1</option>
-        <option value="kit2">Kit 2</option>
-        <option value="kit3">Kit 3</option>
-        <option value="kit4">Kit 4</option>
-    </select>
-    </div>
+    <form>
+        <h1 class="title">Nouvelle Commande de kit</h1>
+        <div class="cmd_kit">
+            <div class="menu-deroulant">
+                <div class="kit">
+                    <label for="kit">Nombre de : kit 1</label>
+                    <input type="text" id="name" name="name" required
+                           minlength="0" maxlength="2" size="2">
+                </div>
+                <div class="kit">
+                    <label for="kit">kit 2</label>
+                    <input type="text" id="name" name="name" required
+                           minlength="0" maxlength="2" size="2">
+                </div>
+                <div class="kit">
+                    <label for="kit">kit 3</label>
+                    <input type="text" id="name" name="name" required
+                           minlength="0" maxlength="2" size="2">
+                </div>
+                <div class="kit">
+                    <label for="kit">kit 4</label>
+                    <input type="text" id="name" name="name" required
+                           minlength="0" maxlength="2" size="2">
+                </div>
+                <div class="kit">
+                    <label for="kit">kit 5</label>
+                    <input type="text" id="name" name="name" required
+                           minlength="0" maxlength="2" size="2">
+                </div>
+                <div class="kit">
+                    <label for="kit">kit 6</label>
+                    <input type="text" id="name" name="name" required
+                           minlength="0" maxlength="2" size="2">
+                </div>
+                <div class="kit">
+                    <label for="kit">kit 7</label>
+                    <input type="text" id="name" name="name" required
+                           minlength="0" maxlength="2" size="2">
+                </div>
+                <div class="kit">
+                    <label for="kit">kit 8</label>
+                    <input type="text" id="name" name="name" required
+                           minlength="0" maxlength="2" size="2">
+                </div>
+                <div class="kit">
+                    <label for="kit">kit 9</label>
+                    <input type="text" id="name" name="name" required
+                           minlength="0" maxlength="2" size="2">
+                </div>
+                <div class="kit">
+                    <label for="kit">kit 10</label>
+                    <input type="text" id="name" name="name" required
+                           minlength="0" maxlength="2" size="2">
+                </div>
+                <div class="kit">
+                    <label for="kit">kit 11</label>
+                    <input type="text" id="name" name="name" required
+                           minlength="0" maxlength="2" size="2">
+                </div>
+                <div class="kit">
+                    <label for="kit">kit 12</label>
+                    <input type="text" id="name" name="name" required
+                           minlength="0" maxlength="2" size="2">
+                </div>
+            </div>
+            <button name="valide" type="button">VALIDE</button>
+        </div>
+    </form>
 {% endblock %}
 
 {% block script %}
