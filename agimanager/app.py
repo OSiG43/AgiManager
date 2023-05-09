@@ -19,6 +19,8 @@ app.register_blueprint(agigreen_bp, url_prefix='/agigreen')
 def accueil():
     return render_template('accueil.html')
 
+
+
 #On lance l'application
 if __name__ == '__main__':
     from agimanager.db_utils import init_db
