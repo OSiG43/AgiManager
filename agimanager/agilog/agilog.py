@@ -6,3 +6,7 @@ agilog_bp = Blueprint('agilog', __name__, template_folder='../templates/agilog',
 @agilog_bp.route('/test')
 def test():
     return render_template('test_agilog.html')
+
+@agilog_bp.route('/suivi_cmd')
+def agilogcmd():
+    return render_template('agilog_suivi_cmd.html')
