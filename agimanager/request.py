@@ -33,3 +33,128 @@ def getAllKitCmd():
     cur.execute("SELECT id_kit, h_envoi, h_recep FROM Commande_kit")
     lignes = cur.fetchall()
     return lignes
+
+
+def getStock(id_piece):
+    # Connexion à la base de données
+    con = get_db()
+    cursor = con.cursor()
+
+    # Exécution de la requête SQL pour récupérer le stock de la pièce
+    query = "SELECT quantite FROM Stock_Agilog WHERE id_piece = ?"
+    cursor.execute(query, (id_piece,))
+    result = cursor.fetchone()
+
+    # Vérification que la pièce a été trouvée
+    if result is None:
+        return "La pièce avec l'ID " + str(id_piece) + " n'a pas été trouvée dans le stock Agilog."
+    else:
+        return result[0]
+
+
+def AddOption(ref, nom, id_piece=None):
+    # Connexion à la base de données
+    con = get_db()
+    cursor = con.cursor()
+
+    # Exécution de la requête SQL pour insérer une nouvelle option dans la table "Option"
+    query = "INSERT INTO Option (code_option, id_piece, nom_option) VALUES (?, ?, ?)"
+    cursor.execute(query, (ref, id_piece, nom))
+
+    # Validation de la transaction
+    con.commit()
+
+
+    # Message de confirmation
+    return "L'option avec le code " + str(ref) + " a été ajoutée à la base de données."
+
+
+def AddKit(nom):
+    # Connexion à la base de données
+    con = get_db()
+    cursor = con.cursor()
+
+    # Exécution de la requête SQL pour insérer un nouveau kit dans la table "Kits"
+    query = "INSERT INTO Kits (nom_kit) VALUES (?)"
+    cursor.execute(query, (nom,))
+
+    # Validation de la transaction
+    con.commit()
+
+    # Message de confirmation
+    return "Le kit avec le nom " + str(nom) + " a été ajouté à la base de données."
+
+
+def AddPiece(ref, nom):
+    # Connexion à la base de données
+    con = get_db()
+    cursor = con.cursor()
+
+    # Exécution de la requête SQL pour insérer une nouvelle pièce dans la table "Pieces"
+    query = "INSERT INTO Pieces (id_piece, designation) VALUES (?, ?)"
+    cursor.execute(query, (ref, nom))
+
+    # Validation de la transaction
+    con.commit()
+
+    # Message de confirmation
+    return "La pièce avec l'id " + str(ref) + " a été ajoutée à la base de données."
+
+
+def AddPieceInKit(id_kit, id_piece, qts):
+    # Connexion à la base de données
+    con = get_db()
+    cursor = con.cursor()
+
+    # Exécution de la requête SQL pour insérer une nouvelle entrée dans la table "composition_kit"
+    query = "INSERT INTO composition_kit (id_kit, id_piece, quantite) VALUES (?, ?, ?)"
+    cursor.execute(query, (id_kit, id_piece, qts))
+
+    # Validation de la transaction
+    con.commit()
+
+    # Message de confirmation
+    return "L'entrée avec l'id_kit " + str(id_kit) + " et l'id_piece " + str(
+        id_piece) + " a été ajoutée à la base de données."
+
+
+def AddStock(id_piece, qts, seuil_cmd):
+    # Connexion à la base de données
+    con = get_db()
+    cursor = con.cursor()
+
+    # Exécution de la requête SQL pour insérer une nouvelle entrée dans la table "stock_agilog"
+    query = "INSERT INTO stock_agilog (id_piece, quantite, seuil_commande) VALUES (?, ?, ?)"
+    cursor.execute(query, (id_piece, qts, seuil_cmd))
+
+    # Validation de la transaction
+    con.commit()
+
+
+    # Message de confirmation
+    return "L'entrée avec l'id_piece " + str(id_piece) + ", la quantité " + str(
+        qts) + " et le seuil de commande " + str(seuil_cmd) + " a été ajoutée à la base de données."
+
+
+def addKitCmd(id_kit, options):
+    # Connexion à la base de données
+    con = get_db()
+    cursor = con.cursor()
+
+    # Insertion de la commande dans la table "commande_kit"
+    query_cmd = "INSERT INTO commande_kit (id_kit, h_recept, h_envoi) VALUES (?, ?, ?)"
+    cursor.execute(query_cmd, (id_kit, None, None))
+    cmd_id = cursor.lastrowid
+
+    # Insertion des options dans la table "composition_option"
+    for option_id in options:
+        query_option = "INSERT INTO composition_option (id_commande, id_option) VALUES (?, ?)"
+        cursor.execute(query_option, (cmd_id, option_id))
+
+    # Validation de la transaction
+    con.commit()
+
+    # Message de confirmation
+    return "La commande avec l'id_kit " + str(id_kit) + " et les options " + str(
+        options) + " a été ajoutée à la base de données."
+
