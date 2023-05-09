@@ -1,27 +1,3 @@
-form .cmd_kit .menu-deroulant {
-    display: flex;
-    width: 50%;
-    justify-content: right;
-}
-form .cmd_kit{
-    display: flex;
-    justify-content: space-between;
-    border-radius: 5px;
-    border: 1px solid #bcbdbd;
-    box-shadow: 5px 5px 5px gray;
-}
-
-form.h1{
-    display: flex;
-    justify-content: center;
-    text-align: center;
-}
-
-form .cmd_kit .menu-deroulant .kit {
-    display: flex;
-    padding: 10px;
-}
-
 .cmds{
     display: flex;
     flex-direction: column;
@@ -99,18 +75,6 @@ form .cmd_kit .menu-deroulant .kit {
     margin-top: 2px;
     margin-bottom: 5px;
     margin-left: 40px;
-}
-
-button{
-    display: flex;
-    float: right;
-    margin: 10px;
-    padding: 10px;
-    text-align: center;
-    justify-content: center;
-    background-color: bisque;
-    border: 1px double #bcbdbd;
-    border-radius: 5px;
 }
 
 .cmd .contenu_cmd .lot{
