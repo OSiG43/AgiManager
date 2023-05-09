@@ -1,0 +1,48 @@
+form .cmd_kit .menu-deroulant {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+form .cmd_kit{
+    display: flex;
+    justify-content: space-between;
+    border-radius: 5px;
+    width: 50%;
+    margin: auto;
+    border: 1px solid #bcbdbd;
+    box-shadow: 5px 5px 5px gray;
+}
+
+.kit label{
+    margin-left: 10px;
+}
+
+.kit input{
+    background-color: aliceblue;
+    border-radius: 5px;
+    width: 40px;
+    border: 1px solid #bcbdbd;
+    box-shadow: 5px 5px 5px gray;
+}
+
+form h1{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+form h2{
+    margin-left: 10px;
+}
+
+form .cmd_kit .menu-deroulant .kit {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.cmd_kit button{
+    margin: auto;
+    height: 40px;
+    padding-right:;
+}
