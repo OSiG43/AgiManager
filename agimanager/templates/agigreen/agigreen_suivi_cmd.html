@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block style %}
+<link rel="stylesheet" href="../static/agi_suivi.css" type="text/css" >
+{% endblock %}
+
+{% block content %}
+<h1 class="title">Suivi commandes</h1>
+<div class="cmds">
+
+    <div class="cmd">
+        <div class="bandeau">
+            <div class="infos">
+                <p class="nb_cmd">Commande n°1</p>
+                <p class="etat_cmd">Envoyée</p>
+            </div>
+           <i onclick="toggleExpansion(event)" style="font-size:1.3rem;" class="ti ti-arrow-badge-down"></i>
+        </div>
+        <div id="contenu_cmd" class="contenu_cmd">
+            <div class="lot">
+
+                <table>
+                    <tr>
+                        <th class="nb_kit">Qts</th>
+                        <th class="kit">Kit</th>
+                    </tr>
+
+                    <tr>
+                        <td class="nb_kit">1</td>
+                        <td class="kit">kit 1</td>
+                    </tr>
+                    <tr>
+                        <td class="nb_kit">1</td>
+                        <td class="kit">kit 1</td>
+                    </tr>
+
+                </table>
+            </div>
+            <div class="donnee">
+                <p class="heure_envoi">Heure d'envoi : 55 119</p>
+                <p class="heure_reception">Heure de réception : kin 221</p>
+                <button type="button" id="recu" name="recu" class="reponse" onclick="changestyle(recu)">Reçu</button>
+                <button type="button" id="pb" name="pb" class="reponse" style="display: none" onclick="changestyle()">Signaler un problème</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+    function toggleExpansion(event) {
+        //On récupère l'élément à afficher/masquer --> il s'agit de l'élément de classe "contenu_cmd" qui est le frère de l'élément cliqué
+        console.log(event);
+        var contenu_cmd = event.target.parentNode.parentNode.getElementsByClassName("contenu_cmd")[0];
+        contenu_cmd.style.display = (contenu_cmd.style.display == "none") ? "flex" : "none";
+
+        var icon = event.target;
+        //on fait tourner l'icone de 90°
+        icon.style.transform = (icon.style.transform == "rotate(-90deg)") ? "rotate(0deg)" : "rotate(-90deg)";
+    }
+
+    function loadPendingCmd(){
+
+    }
+</script>
+
+{% endblock %}
