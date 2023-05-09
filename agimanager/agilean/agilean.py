@@ -8,10 +8,7 @@ agilean_bp = Blueprint('agilean', __name__, template_folder='../templates/agilea
 def test():
     return render_template('test_agilean.html')
 
-@agilean_bp.route('/agilean_cmd')
-def agilean_cmd():
-    return render_template('agilean_cmd.html')
 
-@agilean_bp.route('/suivi_commandes')
-def suivi_commandes():
+@agilean_bp.route('/suivi_cmd')
+def suivi_cmd():
     return render_template('suivi_commandes.html')
