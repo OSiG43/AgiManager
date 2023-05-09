@@ -26,3 +26,7 @@ def receive_cmd():
 @agilog_bp.route('/stock')
 def stock():
     return render_template('stock.html')
+
+@agilog_bp.route('/stock')
+def stock():
+    return render_template('stock.html')
