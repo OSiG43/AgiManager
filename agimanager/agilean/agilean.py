@@ -12,3 +12,7 @@ def test():
 @agilean_bp.route('/suivi_cmd')
 def suivi_cmd():
     return render_template('suivi_commandes.html')
+
+@agilean_bp.route('/agilean_cmd')
+def agilean_cmd():
+    return render_template('agilean_cmd.html')
