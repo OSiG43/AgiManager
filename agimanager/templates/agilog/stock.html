@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block style %}
+    <link rel="stylesheet" href="../static/stock_agilog.css" type="text/css" >
+{% endblock %}
+
+{% block content %}
+    <p>
+    <h1>Agilog</h1>
+    <h2>Stock de pièce</h2>
+
+    <table>
+        <tr>
+            <th>Désignation</th>
+            <th>Code Article</th>
+            <th>Quantité actuelle</th>
+            <th>Seuil de Commande</th>
+        </tr>
+        <tr>
+            <td>Antenne (option)</td>
+            <td>An</td>
+            <td>1</td>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td>Attache Accessoire</td>
+            <td>AA</td>
+            <td>6</td>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td>Attache</td>
+            <td>AT</td>
+            <td>1</td>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td>Arceau</td>
+            <td>AC</td>
+            <td>0</td>
+            <td>4</td>
+        </tr>
+    </table>
+
+
+    </p>
+{% endblock %}
+
