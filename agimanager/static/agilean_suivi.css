@@ -1,4 +1,8 @@
-.cmds{
+.title{
+    text-align: center;
+}
+
+#cmds{
     display: flex;
     flex-direction: column;
 }
@@ -23,6 +27,7 @@
     border-radius: 5px;
     border: 1px solid #bcbdbd;
     box-shadow: 5px 5px 5px gray;
+    margin-bottom: 4px;
 }
 
 .cmd .bandeau .etat_cmd{
