@@ -28,10 +28,10 @@ def getPiecesKit(id_kit) :
     lignes = cur.fetchall()
     return lignes
 
-def getAllKitCmd():
+def getAllKitCmd(order_by="status='Reçu'"):
     con = get_db()
     cur = con.cursor()
-    cur.execute("SELECT * FROM Commande_Agilean ORDER BY status='Reçu'")
+    cur.execute(f"SELECT * FROM Commande_Agilean ORDER BY {order_by}")
     lignes = cur.fetchall()
 
     # On initialise la liste des commandes avec des dictionnaires vides pour chaque commande c'est à dire chaque
