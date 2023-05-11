@@ -10,19 +10,30 @@
 
     <table>
         <tr>
-            <th>Désignation</th>
-            <th>Code Article</th>
-            <th>Quantité actuelle</th>
-            <th>Seuil de Commande</th>
+            <th>Statistique</th>
+            <th>CmdKit</th>
+            <th></th>
+            <th>CmdPièce</th>
         </tr>
         <tr>
-            {% for ligne in stock %}
-                <tr>
-                    <td>{{ ligne[0] }}</td>
-                    <td>{{ ligne[1] }}</td>
-                    <td>{{ ligne[2] }}</td>
-                    <td>{{ ligne[3] }}</td>
-                </tr>
+            {% for ligne in StatKit %}
+                {% for row in StatPiece %}
+                    <tr>
+                        <td>{{ ligne[0] }}</td>
+                        <td></td>
+                        <td>{{ row[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ ligne[1] }}</td>
+                        <td></td>
+                        <td>{{ row[1] }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ ligne[2] }}</td>
+                        <td></td>
+                        <td>{{ row[2] }}</td>
+                    </tr>
+                {% endfor %}
             {% endfor %}
         </tr>
     </table>

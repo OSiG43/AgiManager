@@ -17,7 +17,10 @@ app.register_blueprint(agigreen_bp, url_prefix='/agigreen')
 
 @app.route('/')
 def accueil():
-    return render_template('accueil.html')
+    from agimanager.agilog.requests import getStatKitCmd, getStatPieceCmd
+    StatKit = getStatKitCmd()
+    StatPiece = getStatPieceCmd()
+    return render_template('Stat Cmd.html',StatPiece,StatKit)
 
 #On lance l'application
 if __name__ == '__main__':

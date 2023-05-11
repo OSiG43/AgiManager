@@ -67,3 +67,8 @@
     width:50px;
 }
 
+
+.popup.addCmd legend
+{
+    text-align:left;
+}

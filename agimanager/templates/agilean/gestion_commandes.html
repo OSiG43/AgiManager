@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block style %}
-<link rel="stylesheet" href="../static/agilean_suivi.css" type="text/css" >
+<link rel="stylesheet" href="../static/agilean_cmd.css" type="text/css" >
 <link rel="stylesheet" href="../static/popup.css" type="text/css" >
 {% endblock %}
 
 {% block content %}
-<h1 class="title">Suivi commandes <button onclick="openAddCmdPopup()" type="button" class="tiButton"><i style="font-size:2rem;" class="ti ti-playlist-add"></i></button></h1>
+<h1 class="title">Gestion des commandes <button onclick="openAddCmdPopup()" type="button" class="tiButton"><i style="font-size:2rem;" class="ti ti-playlist-add"></i></button></h1>
 <div id="cmds">
     {% for id,cmd in liste_cmds.items() %}
     {% set status_color =
@@ -23,24 +23,50 @@
         <div class="contenu_cmd" {{"style=display:none;" if cmd["status"]=="Reçu" else ""}}>
             <div class="lot">
 
-                <table>
-                    <tr>
-                        <th class="nb_kit">Qts</th>
-                        <th class="kit">Kit</th>
-                    </tr>
-                    {% for kit in cmd["kits"] %}
+                {% if cmd["kits"]|length %}
+                    <table>
                         <tr>
-                            <td class="nb_kit">{{kit["quantite"]}}</td>
-                            <td class="kit">{{kit["nom"]}}</td>
+                            <th class="nb_kit">Qts</th>
+                            <th class="kit">Kit</th>
                         </tr>
-                    {% endfor %}
+                        {% for kit in cmd["kits"] %}
+                            <tr>
+                                <td class="nb_kit">{{kit["quantite"]}}</td>
+                                <td class="kit">{{kit["nom"]}}</td>
+                            </tr>
+                        {% endfor %}
 
-                </table>
+                    </table>
+                {% endif %}
+
+                {% if cmd["pieces"]|length %}
+                    <table>
+                        <tr>
+                            <th class="nb_kit">Qts</th>
+                            <th class="kit">Piece</th>
+                        </tr>
+                        {% for piece in cmd["pieces"] %}
+                            <tr>
+                                <td class="nb_kit">{{piece["quantite"]}}</td>
+                                <td class="kit">{{piece["nom"]}}</td>
+                            </tr>
+                        {% endfor %}
+
+                    </table>
+                {% endif %}
             </div>
             <div class="donnee">
-                <p class="heure_envoi">Heure d'envoi : {{ cmd["h_envoi"] }}</p>
-                <p class="heure_reception">Heure de réception : {{ "---" if cmd["h_envoi"] is none else cmd["h_envoi"] }}</p>
-                <button type="button" name="recu" class="classicButton" onclick="changeCmdStatus({{cmd['id']}})">Reçu</button>
+                <p class="heure_envoi">Heure d'envoi : {{ cmd["h_achat"] }}</p>
+                <p class="heure_reception">Heure de réception : {{ "---" if cmd["h_achat"] is none else cmd["h_achat"] }}</p>
+                <button
+                        type="button"
+                        name="recu"
+                        class="classicButton"
+                        onclick="changeCmdStatus({{cmd['id']}})"
+                        {{"disabled" if cmd["status"]!="Envoyée" else ""}}
+                >
+                    Reçu
+                </button>
             </div>
         </div>
     </div>
@@ -67,10 +93,10 @@
                                                 {% endfor %}
                                             </select>
                                         </label>
-                                        <label>Quantité: <input name="qts-1" type="number" min="0"></label>
+                                        <label>Quantité: <input name="qts-kit-1" type="number" min="0"></label>
                                     </div>
 
-                                    <template id="form-group-template">
+                                    <template id="form-group-kit-template">
                                          <div class="form-group">
                                             <label>
                                                 kit:
@@ -81,7 +107,7 @@
                                                     {% endfor %}
                                                 </select>
                                             </label>
-                                            <label>Quantité: <input name="qts-${index}" type="number" min="0"></label>
+                                            <label>Quantité: <input name="qts-kit-${index}" type="number" min="0"></label>
 
                                         </div>
                                     </template>
@@ -90,6 +116,35 @@
 
                             <fieldset>
                                 <legend>Commande de pièces unique</legend>
+                                <div id="list-cmd-piece">
+                                    <div class="form-group">
+                                        <label>
+                                            Pièce:
+                                            <select name="piece-1" id="piece-1">
+                                                <option value="-1">Selectionner une pièce</option>
+                                                {% for piece in liste_pieces %}
+                                                <option value={{piece["id"]}}>{{piece["nom"]}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </label>
+                                        <label>Quantité: <input name="qts-piece-1" type="number" min="0"></label>
+                                    </div>
+
+                                    <template id="form-group-piece-template">
+                                         <div class="form-group">
+                                        <label>
+                                            Pièce:
+                                            <select name="piece-${index}" id="piece-${index}">
+                                                <option value="-1">Selectionner une pièce</option>
+                                                {% for piece in liste_pieces %}
+                                                <option value={{piece["id"]}}>{{piece["nom"]}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </label>
+                                        <label>Quantité: <input name="qts-piece-${index}" type="number" min="0"></label>
+                                    </div>
+                                    </template>
+                                </div>
 
                             </fieldset>
 
@@ -120,9 +175,9 @@
 
                 </div>
                 <div class="donnee">
-                    <p class="heure_envoi">Heure d'envoi : ${h_envoi}</p>
+                    <p class="heure_envoi">Heure d'envoi : ${h_achat}</p>
                     <p class="heure_reception">Heure de réception : ${h_recep}</p>
-                    <button type="button" name="recu" class="classicButton" onclick="changeCmdStatus(${id})">Reçu</button>
+                    <button ${disabled} type="button" name="recu" class="classicButton" onclick="changeCmdStatus(${id})">Reçu</button>
                 </div>
             </div>
     </div>
@@ -184,10 +239,16 @@
 
                         //On récupère la liste des ids des commandes qui été non étendu (contenu_cmd.style.display)
                         //On les stocke dans un tableau
+                        //On récupère aussi la liste des élements en status "Reçu" qui étaient étendu
                         let liste_id_cmd_non_etendu = [];
+                        let liste_id_cmd_recu_etendu = [];
                         for(let i=0; i<cmds.children.length; i++){
                             if(cmds.children[i].getElementsByClassName("contenu_cmd")[0].style.display === "none")
                                 liste_id_cmd_non_etendu.push(cmds.children[i].getAttribute("cmd"));
+
+                            if(cmds.children[i].getElementsByClassName("etat_cmd")[0].innerHTML === "Reçu"
+                                && cmds.children[i].getElementsByClassName("contenu_cmd")[0].style.display === "flex")
+                                liste_id_cmd_recu_etendu.push(cmds.children[i].getAttribute("cmd"));
                         }
 
                         cmds.innerHTML = "";
@@ -201,30 +262,50 @@
 
                             let display = "flex";
                             let transform = "rotate(0deg)";
-                            if(liste_id_cmd_non_etendu.includes(cmd["id"].toString()) || cmd["status"] === "Reçu"){
+                            //Si la commande n'était pas étendu avant le rechargement de la page
+                            //Et que la commande n'était pas étendu alors que en status reçu
+                            //Alors on ferme la commande
+                            if(liste_id_cmd_non_etendu.includes(cmd["id"].toString()) ||
+                                (cmd["status"] === "Reçu" && !liste_id_cmd_recu_etendu.includes(cmd["id"].toString())))
+                            {
                                 display = "none";
                                 transform = "rotate(-90deg)";
                             }
 
                              //On construit la liste des kits
-                            let kits = "<table><tr><th class='nb_kit'>Qts</th><th class='kit'>Kit</th></tr>";
-                            Object.values(cmd.kits).forEach(kit =>{
-                                kits+=interpolate(kit_template.innerHTML, kit);
-                            });
-                            kits+="</table>";
+                            let kits = "";
+                            if(cmd.kits.length > 0){
+                                kits+="<table><tr><th class='nb_kit'>Qts</th><th class='kit'>Kit</th></tr>";
+                                Object.values(cmd.kits).forEach(kit =>{
+                                    kits+=interpolate(kit_template.innerHTML, kit);
+                                });
+                                kits+="</table>";
+                            }
+                            if(cmd.pieces.length > 0){
+                                kits+="<table><tr><th class='nb_kit'>Qts</th><th class='kit'>Kit</th></tr>";
+                                Object.values(cmd.pieces).forEach(piece =>{
+                                    kits+=interpolate(kit_template.innerHTML, piece);
+                                });
+                                kits+="</table>";
+                            }
+
 
                             let status_color = "grey";
+                            let disabled="disabled";
                             if(cmd["status"] === "En attente")
                                  status_color = "red";
                             else if(cmd["status"] === "En traitement")
                                 status_color = "orange";
-                            else if(cmd["status"] === "Envoyé")
+                            else if(cmd["status"] === "Envoyée"){
+                                disabled="";
                                 status_color = "green";
+                            }
 
                             if(cmd["h_recep"] === null)
                                 cmd["h_recep"] = "---";
 
-                            html+=interpolate(template.innerHTML, {...cmd, display:display, transform:transform, status_color:status_color, kits:kits});
+
+                            html+=interpolate(template.innerHTML, {...cmd, disabled: disabled, display:display, transform:transform, status_color:status_color, kits:kits});
 
                         });
 
@@ -240,7 +321,26 @@
     window.setInterval(reloadCmds, 5000);
 
     function changeCmdStatus(cmd_id){
-            // A faire
+            // On envoi une requête post à /receive_cmd avec l'id de la commande
+
+            fetch("{{url_for('agilean.receive_cmd')}}", {
+                method : "POST",
+                headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                         },
+                body : JSON.stringify({id: cmd_id})
+            }).then(
+                response => response.text()
+            ).then(
+                html => {
+                if(html === "OK")
+                    reloadCmds();
+                else
+                    alert("Erreur lors de la réception de la commande");
+                }
+            );
+
     }
 </script>
 

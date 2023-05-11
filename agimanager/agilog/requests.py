@@ -30,9 +30,17 @@ def getPiecesKit(id_kit) :
     lignes = cur.fetchall()
     return (lignes)
 
-def getAllKitCmd():
+def getStatKitCmd():
     con = get_db()
     cur = con.cursor()
-    cur.execute("SELECT id_kit, h_envoi, h_recep FROM Commande_kit")
+    cur.execute("SELECT count(Composition_leanCmd_kit.id_cmd), avg(h_achat-h_recep), Composition_leanCmd_kit.quantite FROM Commande_Agilean JOIN Composition_leanCmd_kit ON Commande_Agilean.id = Composition_leanCmd_kit.id_cmd WHERE Commande_Agilean.id = Composition_leanCmd_kit.id_cmd")
+    lignes = cur.fetchall()
+    return (lignes)
+
+
+def getStatPieceCmd():
+    con = get_db()
+    cur = con.cursor()
+    cur.execute("SELECT count(Composition_leanCmd_piece.id_cmd), avg(h_achat-h_recep), Composition_leanCmd_piece.quantite FROM Commande_Agilean JOIN Composition_leanCmd_piece ON Commande_Agilean.id = Composition_leanCmd_piece.id_cmd WHERE Commande_Agilean.id = Composition_leanCmd_piece.id_cmd")
     lignes = cur.fetchall()
     return (lignes)
