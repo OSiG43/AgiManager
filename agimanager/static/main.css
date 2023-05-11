@@ -10,6 +10,19 @@
     border-radius: 5px;
 }
 
+.classicButton:hover:not(:disabled), .classicButton:hover:not([disabled]){
+    background-color: #FFD29C;
+}
+
+.classicButton:active:not(:disabled), .classicButton:active:not([disabled]){
+    background-color: bisque;
+}
+
+.classicButton:disabled, .classicButton[disabled]{
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .tiButton
 {
 background: none;
