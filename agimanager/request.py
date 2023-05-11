@@ -10,7 +10,7 @@ def getAllStock():
 def getPieceList() :
     con = get_db()
     cur = con.cursor()
-    cur.execute('SELECT id, ref, nom_piece FROM Pieces')
+    cur.execute('SELECT id, ref, nom FROM Pieces')
     lignes = cur.fetchall()
     return lignes
 
@@ -31,7 +31,7 @@ def getPiecesKit(id_kit) :
 def getAllKitCmd():
     con = get_db()
     cur = con.cursor()
-    cur.execute("SELECT cmd.*, compo.id_kit, Kits.nom, compo.quantite FROM Commande_Kit as cmd JOIN Composition_cmd_kit as compo on id_cmd=cmd.id JOIN Kits on Kits.id=id_kit ORDER BY cmd.status='Reçu'")
+    cur.execute("SELECT * FROM Commande_Agilean ORDER BY status='Reçu'")
     lignes = cur.fetchall()
 
     # On initialise la liste des commandes avec des dictionnaires vides pour chaque commande c'est à dire chaque
@@ -40,14 +40,25 @@ def getAllKitCmd():
     # plusieurs kits dans la commande. Cette requete à l'avantage de permettre la récupèration de toutes les infos
     # en une seule requete
     unique_cmds = list(dict.fromkeys([cmd["id"] for cmd in lignes]).keys())
-    liste_cmds = {id: {"kits": []} for id in unique_cmds}
+    liste_cmds = {id: {} for id in unique_cmds}
 
     for cmd in lignes:
+        #On récupère la liste des kits dans la commande
+        querry = "SELECT id_kit, Kits.nom, quantite FROM Composition_leanCmd_kit JOIN Kits on id_kit=Kits.id WHERE id_cmd = ?"
+        cur.execute(querry, (cmd["id"],))
+        kits = cur.fetchall()
+
+        #on récupère la listes des pièces dans la commande
+        querry = "SELECT id_piece, Pieces.nom, quantite FROM Composition_leanCmd_piece JOIN Pieces on id_piece=Pieces.id WHERE id_cmd = ?"
+        cur.execute(querry, (cmd["id"],))
+        pieces = cur.fetchall()
+
         liste_cmds[cmd["id"]]["id"] = cmd["id"]
         liste_cmds[cmd["id"]]["status"] = cmd["status"]
-        liste_cmds[cmd["id"]]["h_envoi"] = cmd["h_envoi"]
+        liste_cmds[cmd["id"]]["h_achat"] = cmd["h_achat"]
         liste_cmds[cmd["id"]]["h_recep"] = cmd["h_recep"]
-        liste_cmds[cmd["id"]]["kits"].append({"id_kit": cmd["id_kit"], "nom":cmd["nom"], "quantite": cmd["quantite"]})
+        liste_cmds[cmd["id"]]["kits"] = [dict(kit) for kit in kits]
+        liste_cmds[cmd["id"]]["pieces"] = [dict(piece) for piece in pieces]
 
     return liste_cmds
 
@@ -153,25 +164,36 @@ def AddStock(id_piece, qts, seuil_cmd):
         qts) + " et le seuil de commande " + str(seuil_cmd) + " a été ajoutée à la base de données."
 
 
-def addKitCmd(id_kit, options):
+def addAgileanCmd(kits_list, pieces_list):
     # Connexion à la base de données
     con = get_db()
     cursor = con.cursor()
 
-    # Insertion de la commande dans la table "commande_kit"
-    query_cmd = "INSERT INTO commande_kit (id_kit, h_recept, h_envoi) VALUES (?, ?, ?)"
-    cursor.execute(query_cmd, (id_kit, None, None))
+    # Insertion de la commande dans la table "Commande_Agilean"
+    query_cmd = "INSERT INTO Commande_Agilean (h_achat) VALUES (?)"
+    cursor.execute(query_cmd, ("111",))
     cmd_id = cursor.lastrowid
 
-    # Insertion des options dans la table "composition_option"
-    for option_id in options:
-        query_option = "INSERT INTO composition_option (id_commande, id_option) VALUES (?, ?)"
-        cursor.execute(query_option, (cmd_id, option_id))
+    # Insertion des kits dans la table "Composition_leanCmd_kit"
+    for kit in kits_list:
+        query_option = "INSERT INTO Composition_leanCmd_kit (id_cmd, id_kit, quantite) VALUES (?, ?, ?)"
+        cursor.execute(query_option, (cmd_id, kit["id"], kit["quantite"]))
+
+    # Insertion des kits dans la table "Composition_leanCmd_piece"
+    for piece in pieces_list:
+        query_option = "INSERT INTO Composition_leanCmd_piece (id_cmd, id_piece, quantite) VALUES (?, ?, ?)"
+        cursor.execute(query_option, (cmd_id, piece["id"], piece["quantite"]))
 
     # Validation de la transaction
     con.commit()
 
-    # Message de confirmation
-    return "La commande avec l'id_kit " + str(id_kit) + " et les options " + str(
-        options) + " a été ajoutée à la base de données."
+    return cmd_id
+
+def changeAgileanCmdStatus(cmd_id, status):
+    con = get_db()
+    cur = con.cursor()
+    cur.execute("UPDATE Commande_Agilean SET status = ? WHERE id = ?", (status, cmd_id))
+    con.commit()
+    #On renvoi 0 si erreur 1 si tout bon.
+    return cur.rowcount
 
