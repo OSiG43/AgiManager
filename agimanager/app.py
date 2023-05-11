@@ -19,14 +19,8 @@ app.register_blueprint(agigreen_bp, url_prefix='/agigreen')
 
 @app.route('/')
 def accueil():
-    from agimanager.agilog.requests import getAllStock
-    stock = getAllStock()
-    return render_template('stock.html', stock = stock)
+    return render_template('accueil.html')
 
-
-    from agimanager.agilog.requests import getAllStock
-    stock = getAllStock()
-    return render_template('stock.html', stock = stock)
 
 @app.route('/admin')
 def admin():

@@ -3,11 +3,11 @@ from math import floor
 from agimanager.db_utils import get_db
 
 def getAllStock():
-    con = get_db()
-    cur = con.cursor()
-    cur.execute('SELECT id_piece, quantite FROM Stock_Agilog')
-    lignes = cur.fetchall()
-    return lignes
+    con= get_db()
+    cur=con.cursor()
+    cur.execute('SELECT nom, id_piece, quantite, seuil_commande FROM Stock_Agilog JOIN Pieces ON Pieces.id = Stock_Agilog.id_piece')
+    lignes=cur.fetchall()
+    return(lignes)
 
 def getPieceList() :
     con = get_db()

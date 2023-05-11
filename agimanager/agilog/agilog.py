@@ -23,10 +23,11 @@ def receive_cmd():
         return "OK"
     else:
         return "Error"
-@agilog_bp.route('/stock')
-def stock():
-    return render_template('stock.html')
+
 
 @agilog_bp.route('/stock')
 def stock():
-    return render_template('stock.html')
+    from agimanager.request import getAllStock
+    stock = getAllStock()
+    return render_template('stock.html', stock=stock)
+
