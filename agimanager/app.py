@@ -23,6 +23,11 @@ def accueil():
     stock = getAllStock()
     return render_template('stock.html', stock = stock)
 
+
+    from agimanager.agilog.requests import getAllStock
+    stock = getAllStock()
+    return render_template('stock.html', stock = stock)
+
 @app.route('/admin')
 def admin():
     from agimanager.timer_utils import timer_get_elapsed_time, is_timer_running
