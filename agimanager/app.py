@@ -15,7 +15,7 @@ app.register_blueprint(agilean_bp, url_prefix='/agilean')
 app.register_blueprint(agigreen_bp, url_prefix='/agigreen')
 
 
-@app.route('/')
+@app.route('/accueil')
 def accueil():
     return render_template('accueil.html')
 
