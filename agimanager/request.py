@@ -1,3 +1,5 @@
+from math import floor
+
 from agimanager.db_utils import get_db
 
 def getAllStock():
@@ -165,13 +167,14 @@ def AddStock(id_piece, qts, seuil_cmd):
 
 
 def addAgileanCmd(kits_list, pieces_list):
+    from agimanager.timer_utils import timer_get_elapsed_time
     # Connexion à la base de données
     con = get_db()
     cursor = con.cursor()
 
     # Insertion de la commande dans la table "Commande_Agilean"
     query_cmd = "INSERT INTO Commande_Agilean (h_achat) VALUES (?)"
-    cursor.execute(query_cmd, ("111",))
+    cursor.execute(query_cmd, (floor(timer_get_elapsed_time()),))
     cmd_id = cursor.lastrowid
 
     # Insertion des kits dans la table "Composition_leanCmd_kit"
@@ -190,9 +193,11 @@ def addAgileanCmd(kits_list, pieces_list):
     return cmd_id
 
 def changeAgileanCmdStatus(cmd_id, status):
+    from agimanager.timer_utils import timer_get_elapsed_time
+    h_to_update = {"En traitement": "h_production", "Envoyée": "h_envoi", "Reçu": "h_recep"}[status]
     con = get_db()
     cur = con.cursor()
-    cur.execute("UPDATE Commande_Agilean SET status = ? WHERE id = ?", (status, cmd_id))
+    cur.execute(f"UPDATE Commande_Agilean SET (status,{h_to_update}) = (?,?) WHERE id = ?", (status, floor(timer_get_elapsed_time()), cmd_id))
     con.commit()
     #On renvoi 0 si erreur 1 si tout bon.
     return cur.rowcount

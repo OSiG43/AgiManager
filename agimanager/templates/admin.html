@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+    <h1>Admin</h1>
+    <div>
+        <h2>Timer</h2>
+        {% if started %}
+            <a href="{{url_for('pause_timer')}}">Pause timer</a>
+        {% else %}
+            <a href="{{url_for('start_timer')}}">Start timer</a>
+            <a href="{{url_for('reset_timer')}}">Reset timer</a>
+        {% endif %}
+        <span>Timer : {{elapsed_time}}</span>
+    </div>
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}
+```
