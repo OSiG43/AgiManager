@@ -6,7 +6,7 @@ from agimanager.db_utils import get_db
 def getAllStock():
     con= get_db()
     cur=con.cursor()
-    cur.execute('SELECT id_piece, quantite FROM Stock_Agilog')
+    cur.execute('SELECT nom_piece, id_piece, quantite, seuil_commande FROM Stock_Agilog JOIN Pieces ON Pieces.ref = Stock_Agilog.id_piece')
     lignes=cur.fetchall()
     return(lignes)
 

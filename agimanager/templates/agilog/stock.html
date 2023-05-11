@@ -16,28 +16,14 @@
             <th>Seuil de Commande</th>
         </tr>
         <tr>
-            <td>Antenne (option)</td>
-            <td>An</td>
-            <td>1</td>
-            <td>4</td>
-        </tr>
-        <tr>
-            <td>Attache Accessoire</td>
-            <td>AA</td>
-            <td>6</td>
-            <td>4</td>
-        </tr>
-        <tr>
-            <td>Attache</td>
-            <td>AT</td>
-            <td>1</td>
-            <td>4</td>
-        </tr>
-        <tr>
-            <td>Arceau</td>
-            <td>AC</td>
-            <td>0</td>
-            <td>4</td>
+            {% for ligne in stock %}
+                <tr>
+                    <td>{{ ligne[0] }}</td>
+                    <td>{{ ligne[1] }}</td>
+                    <td>{{ ligne[2] }}</td>
+                    <td>{{ ligne[3] }}</td>
+                </tr>
+            {% endfor %}
         </tr>
     </table>
 
