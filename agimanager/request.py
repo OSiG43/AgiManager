@@ -13,10 +13,11 @@ def getPieceList() :
     cur.execute('SELECT id, ref, nom_piece FROM Pieces')
     lignes = cur.fetchall()
     return lignes
+
 def getKitList():
     con = get_db()
     cur = con.cursor()
-    cur.execute('SELECT id, nom_kit FROM Kits')
+    cur.execute('SELECT id, nom FROM Kits')
     lignes = cur.fetchall()
     return lignes
 
@@ -30,9 +31,25 @@ def getPiecesKit(id_kit) :
 def getAllKitCmd():
     con = get_db()
     cur = con.cursor()
-    cur.execute("SELECT id_kit, h_envoi, h_recep FROM Commande_kit")
+    cur.execute("SELECT cmd.*, compo.id_kit, Kits.nom, compo.quantite FROM Commande_Kit as cmd JOIN Composition_cmd_kit as compo on id_cmd=cmd.id JOIN Kits on Kits.id=id_kit ORDER BY cmd.status='Reçu'")
     lignes = cur.fetchall()
-    return lignes
+
+    # On initialise la liste des commandes avec des dictionnaires vides pour chaque commande c'est à dire chaque
+    # id distinct
+    # Il faut faire ça car la requete sql renvoie plusieurs ligne associé à la même commande dès lors qu'il y a
+    # plusieurs kits dans la commande. Cette requete à l'avantage de permettre la récupèration de toutes les infos
+    # en une seule requete
+    unique_cmds = list(dict.fromkeys([cmd["id"] for cmd in lignes]).keys())
+    liste_cmds = {id: {"kits": []} for id in unique_cmds}
+
+    for cmd in lignes:
+        liste_cmds[cmd["id"]]["id"] = cmd["id"]
+        liste_cmds[cmd["id"]]["status"] = cmd["status"]
+        liste_cmds[cmd["id"]]["h_envoi"] = cmd["h_envoi"]
+        liste_cmds[cmd["id"]]["h_recep"] = cmd["h_recep"]
+        liste_cmds[cmd["id"]]["kits"].append({"id_kit": cmd["id_kit"], "nom":cmd["nom"], "quantite": cmd["quantite"]})
+
+    return liste_cmds
 
 
 def getStock(id_piece):

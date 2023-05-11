@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block style %}
+<link rel="stylesheet" href="../static/agilean_suivi.css" type="text/css" >
+<link rel="stylesheet" href="../static/popup.css" type="text/css" >
+{% endblock %}
+
+{% block content %}
+<h1 class="title">Suivi commandes <button onclick="openAddCmdPopup()" type="button" class="tiButton"><i style="font-size:2rem;" class="ti ti-playlist-add"></i></button></h1>
+<div id="cmds">
+    {% for id,cmd in liste_cmds.items() %}
+    {% set status_color =
+    "green" if cmd["status"]=="Envoyée" else "orange" if cmd["status"]=="En traitement"
+    else "red" if cmd["status"]=="En attente" else "grey" %}
+    <div class="cmd" cmd={{cmd["id"]}}>
+        <div class="bandeau">
+            <div class="infos">
+                <p class="nb_cmd">Commande n°{{cmd["id"]}}</p>
+                <p style='background-color: {{status_color}}' class="etat_cmd">{{cmd["status"]}}</p>
+            </div>
+           <i onclick="toggleExpansion(event)" style="font-size:1.3rem;" class="ti ti-arrow-badge-down"></i>
+        </div>
+        <div class="contenu_cmd" {{"style=display:none;" if cmd["status"]=="Reçu" else ""}}>
+            <div class="lot">
+
+                <table>
+                    <tr>
+                        <th class="nb_kit">Qts</th>
+                        <th class="kit">Kit</th>
+                    </tr>
+                    {% for kit in cmd["kits"] %}
+                        <tr>
+                            <td class="nb_kit">{{kit["quantite"]}}</td>
+                            <td class="kit">{{kit["nom"]}}</td>
+                        </tr>
+                    {% endfor %}
+
+                </table>
+            </div>
+            <div class="donnee">
+                <p class="heure_envoi">Heure d'envoi : {{ cmd["h_envoi"] }}</p>
+                <p class="heure_reception">Heure de réception : {{ "---" if cmd["h_envoi"] is none else cmd["h_envoi"] }}</p>
+                <button type="button" name="recu" class="classicButton" onclick="changeCmdStatus({{cmd['id']}})">Reçu</button>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div id="shadowBack">
+
+				<div id="addCmdPopup" class="popup addCmd">
+					<h4>Nouvelle commande : </h4>
+                    <form method="post">
+                        <div class="content">
+
+                            <fieldset>
+                                <legend>Commande de kits</legend>
+                                <div id="list-cmd-kit">
+                                    <div class="form-group">
+                                        <label>
+                                            kit:
+                                            <select name="kit-1" id="kit-1">
+                                                <option value="-1">Selectionner un kit</option>
+                                                {% for kit in liste_kits %}
+                                                <option value={{kit["id"]}}>{{kit["nom"]}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </label>
+                                        <label>Quantité: <input name="qts-1" type="number" min="0"></label>
+                                    </div>
+
+                                    <template id="form-group-template">
+                                         <div class="form-group">
+                                            <label>
+                                                kit:
+                                                <select name="kit-${index}" id="kit-${index}">
+                                                    <option value="-1">Selectionner un kit</option>
+                                                    {% for kit in liste_kits %}
+                                                    <option value={{kit["id"]}}>{{kit["nom"]}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </label>
+                                            <label>Quantité: <input name="qts-${index}" type="number" min="0"></label>
+
+                                        </div>
+                                    </template>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend>Commande de pièces unique</legend>
+
+                            </fieldset>
+
+                        </div>
+                        <div class="footer">
+                            <button type="submit" class="classicButton" id="sendBtn">Envoyer la commande</button>
+                            <button type="button" class="classicButton" id="cancelBtn">Annuler</button>
+                        </div>
+                    </form>
+				</div>
+
+</div>
+
+<template id="cmd_template">
+    <div class="cmd" cmd=${id}>
+            <div class="bandeau">
+                <div class="infos">
+                    <p class="nb_cmd">Commande n°${id}</p>
+                    <p style='background-color: ${status_color}' class="etat_cmd">${status}</p>
+                </div>
+               <i onclick="toggleExpansion(event)" style="font-size:1.3rem; transform:${transform}" class="ti ti-arrow-badge-down"></i>
+            </div>
+
+            <div style="display:${display}" class="contenu_cmd" >
+                <div class="lot">
+
+                        ${kits}
+
+                </div>
+                <div class="donnee">
+                    <p class="heure_envoi">Heure d'envoi : ${h_envoi}</p>
+                    <p class="heure_reception">Heure de réception : ${h_recep}</p>
+                    <button type="button" name="recu" class="classicButton" onclick="changeCmdStatus(${id})">Reçu</button>
+                </div>
+            </div>
+    </div>
+</template>
+
+<template id="kit_template">
+    <tr>
+        <td class="nb_kit">${quantite}</td>
+        <td class="kit">${nom}</td>
+    </tr>
+</template>
+
+
+{% endblock %}
+
+{% block script %}
+<script src="{{url_for('static', filename='popup.js')}}"></script>
+
+<script>
+    function toggleExpansion(event) {
+        //On récupère l'élément à afficher/masquer --> il s'agit de l'élément de classe "contenu_cmd" qui est le frère de l'élément cliqué
+        var contenu_cmd = event.target.parentNode.parentNode.getElementsByClassName("contenu_cmd")[0];
+        contenu_cmd.style.display = (contenu_cmd.style.display == "none") ? "flex" : "none";
+
+        var icon = event.target;
+        //on fait tourner l'icone de 90°
+        icon.style.transform = (contenu_cmd.style.display == "none") ? "rotate(-90deg)" : "rotate(0deg)";
+    }
+
+    /**
+     * Get a template from a string
+     * https://stackoverflow.com/a/41015840
+     * @param  {String} str    The string to interpolate
+     * @param  {Object} params The parameters
+     * @return {String}        The interpolated string
+     */
+    function interpolate (str, params) {
+        let names = Object.keys(params);
+        let vals = Object.values(params);
+        return new Function(...names, `return \`${str}\`;`)(...vals);
+    }
+
+    //Cette fonction permet de récupérer les données de commandes au près de la page /agilean/cmds_ajax
+    //et de les afficher dans la page
+    function reloadCmds(){
+
+                const xhttp = new XMLHttpRequest();
+
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+
+                        const response = JSON.parse(this.responseText);
+
+                        //On récupère la liste des commandes
+                        //On vide l'élement "cmds" de la page
+                        //On le reremplie avec les nouvelles commandes.
+                        const liste_cmds = response;
+                        const cmds = document.getElementById("cmds");
+
+                        //On récupère la liste des ids des commandes qui été non étendu (contenu_cmd.style.display)
+                        //On les stocke dans un tableau
+                        let liste_id_cmd_non_etendu = [];
+                        for(let i=0; i<cmds.children.length; i++){
+                            if(cmds.children[i].getElementsByClassName("contenu_cmd")[0].style.display === "none")
+                                liste_id_cmd_non_etendu.push(cmds.children[i].getAttribute("cmd"));
+                        }
+
+                        cmds.innerHTML = "";
+
+                        let template = document.getElementById("cmd_template");
+                        let kit_template = document.getElementById("kit_template");
+
+                        let html = "";
+
+                        response.forEach(cmd =>{
+
+                            let display = "flex";
+                            let transform = "rotate(0deg)";
+                            if(liste_id_cmd_non_etendu.includes(cmd["id"].toString()) || cmd["status"] === "Reçu"){
+                                display = "none";
+                                transform = "rotate(-90deg)";
+                            }
+
+                             //On construit la liste des kits
+                            let kits = "<table><tr><th class='nb_kit'>Qts</th><th class='kit'>Kit</th></tr>";
+                            Object.values(cmd.kits).forEach(kit =>{
+                                kits+=interpolate(kit_template.innerHTML, kit);
+                            });
+                            kits+="</table>";
+
+                            let status_color = "grey";
+                            if(cmd["status"] === "En attente")
+                                 status_color = "red";
+                            else if(cmd["status"] === "En traitement")
+                                status_color = "orange";
+                            else if(cmd["status"] === "Envoyé")
+                                status_color = "green";
+
+                            if(cmd["h_recep"] === null)
+                                cmd["h_recep"] = "---";
+
+                            html+=interpolate(template.innerHTML, {...cmd, display:display, transform:transform, status_color:status_color, kits:kits});
+
+                        });
+
+                        cmds.innerHTML = html;
+
+                    }
+                };
+
+                xhttp.open("GET", "{{url_for('agilean.cmds_ajax')}}", true);
+                xhttp.send();
+
+    }
+    window.setInterval(reloadCmds, 5000);
+
+    function changeCmdStatus(cmd_id){
+            // A faire
+    }
+</script>
+
+{% endblock %}
