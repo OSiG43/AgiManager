@@ -1,10 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block style %}
+    <link rel="stylesheet" href="../static/stock_agilog.css" type="text/css" >
+{% endblock %}
 
-</body>
-</html>
+{% block content %}
+    <p>
+    <h1>Agilog</h1>
+    <h2>Stock de pièce</h2>
+
+    <table>
+        <tr>
+            <th>Désignation</th>
+            <th>Code Article</th>
+            <th>Quantité actuelle</th>
+            <th>Seuil de Commande</th>
+        </tr>
+        <tr>
+            {% for ligne in stock %}
+                <tr>
+                    <td>{{ ligne[0] }}</td>
+                    <td>{{ ligne[1] }}</td>
+                    <td>{{ ligne[2] }}</td>
+                    <td>{{ ligne[3] }}</td>
+                </tr>
+            {% endfor %}
+        </tr>
+    </table>
+
+
+    </p>
+{% endblock %}
+
