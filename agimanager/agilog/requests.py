@@ -33,7 +33,7 @@ def getPiecesKit(id_kit) :
 def getStatKitCmd():
     con = get_db()
     cur = con.cursor()
-    cur.execute("SELECT count(Composition_leanCmd_kit.id_cmd), avg(h_achat-h_recep), Composition_leanCmd_kit.quantite FROM Commande_Agilean JOIN Composition_leanCmd_kit ON Commande_Agilean.id = Composition_leanCmd_kit.id_cmd WHERE Commande_Agilean.id = Composition_leanCmd_kit.id_cmd")
+    cur.execute("SELECT count(Composition_leanCmd_kit.id_cmd), avg(Commande_Agilean.h_recep-Commande_Agilean.h_achat), Composition_leanCmd_kit.quantite FROM Commande_Agilean JOIN Composition_leanCmd_kit ON Commande_Agilean.id = Composition_leanCmd_kit.id_cmd WHERE Commande_Agilean.id = Composition_leanCmd_kit.id_cmd")
     lignes = cur.fetchall()
     return (lignes)
 
@@ -41,6 +41,6 @@ def getStatKitCmd():
 def getStatPieceCmd():
     con = get_db()
     cur = con.cursor()
-    cur.execute("SELECT count(Composition_leanCmd_piece.id_cmd), avg(h_achat-h_recep), Composition_leanCmd_piece.quantite FROM Commande_Agilean JOIN Composition_leanCmd_piece ON Commande_Agilean.id = Composition_leanCmd_piece.id_cmd WHERE Commande_Agilean.id = Composition_leanCmd_piece.id_cmd")
+    cur.execute("SELECT count(Composition_leanCmd_piece.id_cmd), avg(Commande_Agilean.h_recep-Commande_Agilean.h_achat), Composition_leanCmd_piece.quantite FROM Commande_Agilean JOIN Composition_leanCmd_piece ON Commande_Agilean.id = Composition_leanCmd_piece.id_cmd WHERE Commande_Agilean.id = Composition_leanCmd_piece.id_cmd")
     lignes = cur.fetchall()
     return (lignes)

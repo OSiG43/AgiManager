@@ -20,7 +20,7 @@ def accueil():
     from agimanager.agilog.requests import getStatKitCmd, getStatPieceCmd
     StatKit = getStatKitCmd()
     StatPiece = getStatPieceCmd()
-    return render_template('Stat Cmd.html',StatPiece,StatKit)
+    return render_template('Stat Cmd.html',StatPiece = StatPiece,StatKit = StatKit)
 
 #On lance l'application
 if __name__ == '__main__':
