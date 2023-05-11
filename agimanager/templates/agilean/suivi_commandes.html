@@ -2,10 +2,11 @@
 
 {% block style %}
 <link rel="stylesheet" href="../static/agilean_suivi.css" type="text/css" >
+<link rel="stylesheet" href="../static/popup.css" type="text/css" >
 {% endblock %}
 
 {% block content %}
-<h1 class="title">Suivi commandes</h1>
+<h1 class="title">Suivi commandes <button onclick="openAddCmdPopup()" type="button" class="tiButton"><i style="font-size:2rem;" class="ti ti-playlist-add"></i></button></h1>
 <div id="cmds">
     {% for id,cmd in liste_cmds.items() %}
     {% set status_color =
@@ -30,7 +31,7 @@
                     {% for kit in cmd["kits"] %}
                         <tr>
                             <td class="nb_kit">{{kit["quantite"]}}</td>
-                            <td class="kit">kit {{kit["id_kit"]}}</td>
+                            <td class="kit">{{kit["nom"]}}</td>
                         </tr>
                     {% endfor %}
 
@@ -39,12 +40,66 @@
             <div class="donnee">
                 <p class="heure_envoi">Heure d'envoi : {{ cmd["h_envoi"] }}</p>
                 <p class="heure_reception">Heure de réception : {{ "---" if cmd["h_envoi"] is none else cmd["h_envoi"] }}</p>
-                <button type="button" id="recu" name="recu" class="reponse" onclick="changestyle(recu)">Reçu</button>
-                <button type="button" id="pb" name="pb" class="reponse" style="display: none" onclick="changestyle()">Signaler un problème</button>
+                <button type="button" name="recu" class="classicButton" onclick="changeCmdStatus({{cmd['id']}})">Reçu</button>
             </div>
         </div>
     </div>
     {% endfor %}
+</div>
+
+<div id="shadowBack">
+
+				<div id="addCmdPopup" class="popup addCmd">
+					<h4>Nouvelle commande : </h4>
+                    <form method="post">
+                        <div class="content">
+
+                            <fieldset>
+                                <legend>Commande de kits</legend>
+                                <div id="list-cmd-kit">
+                                    <div class="form-group">
+                                        <label>
+                                            kit:
+                                            <select name="kit-1" id="kit-1">
+                                                <option value="-1">Selectionner un kit</option>
+                                                {% for kit in liste_kits %}
+                                                <option value={{kit["id"]}}>{{kit["nom"]}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </label>
+                                        <label>Quantité: <input name="qts-1" type="number" min="0"></label>
+                                    </div>
+
+                                    <template id="form-group-template">
+                                         <div class="form-group">
+                                            <label>
+                                                kit:
+                                                <select name="kit-${index}" id="kit-${index}">
+                                                    <option value="-1">Selectionner un kit</option>
+                                                    {% for kit in liste_kits %}
+                                                    <option value={{kit["id"]}}>{{kit["nom"]}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </label>
+                                            <label>Quantité: <input name="qts-${index}" type="number" min="0"></label>
+
+                                        </div>
+                                    </template>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend>Commande de pièces unique</legend>
+
+                            </fieldset>
+
+                        </div>
+                        <div class="footer">
+                            <button type="submit" class="classicButton" id="sendBtn">Envoyer la commande</button>
+                            <button type="button" class="classicButton" id="cancelBtn">Annuler</button>
+                        </div>
+                    </form>
+				</div>
 
 </div>
 
@@ -67,8 +122,7 @@
                 <div class="donnee">
                     <p class="heure_envoi">Heure d'envoi : ${h_envoi}</p>
                     <p class="heure_reception">Heure de réception : ${h_recep}</p>
-                    <button type="button" id="recu" name="recu" class="reponse" onclick="changestyle(recu)">Reçu</button>
-                    <button type="button" id="pb" name="pb" class="reponse" style="display: none" onclick="changestyle()">Signaler un problème</button>
+                    <button type="button" name="recu" class="classicButton" onclick="changeCmdStatus(${id})">Reçu</button>
                 </div>
             </div>
     </div>
@@ -77,7 +131,7 @@
 <template id="kit_template">
     <tr>
         <td class="nb_kit">${quantite}</td>
-        <td class="kit">kit ${id_kit}</td>
+        <td class="kit">${nom}</td>
     </tr>
 </template>
 
@@ -85,6 +139,7 @@
 {% endblock %}
 
 {% block script %}
+<script src="{{url_for('static', filename='popup.js')}}"></script>
 
 <script>
     function toggleExpansion(event) {
@@ -183,6 +238,10 @@
 
     }
     window.setInterval(reloadCmds, 5000);
+
+    function changeCmdStatus(cmd_id){
+            // A faire
+    }
 </script>
 
 {% endblock %}

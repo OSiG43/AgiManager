@@ -1,5 +1,5 @@
 # Fichier qui contient toutes les vues propre à agilean
-from flask import Blueprint, render_template, jsonify
+from flask import Blueprint, render_template, jsonify, request
 
 agilean_bp = Blueprint('agilean', __name__, template_folder='../templates/agilean', static_folder='static')
 
@@ -12,13 +12,17 @@ def cmds_ajax():
     return jsonify(list(liste_cmds.values()))
 
 
-@agilean_bp.route('/suivi_cmd')
+@agilean_bp.route('/suivi_cmd',methods=('GET', 'POST'))
 def suivi_cmd():
-    from agimanager.request import getAllKitCmd
-    liste_cmds = getAllKitCmd()
+    from agimanager.request import getAllKitCmd, getKitList
 
-    print(liste_cmds)
-    return render_template('suivi_commandes.html', liste_cmds=liste_cmds)
+    if request.method == "POST":
+        print(request.form)
+
+    liste_cmds = getAllKitCmd()
+    liste_kits = getKitList()
+
+    return render_template('suivi_commandes.html', liste_cmds=liste_cmds, liste_kits=liste_kits)
 
 @agilean_bp.route('/agilean_cmd')
 def agilean_cmd():
