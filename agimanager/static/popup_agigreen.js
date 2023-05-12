@@ -1,0 +1,46 @@
+const shadowBack = document.getElementById("shadowBack");
+const addCmdPopup = document.getElementById("addCmdPopup");
+
+addCmdPopup.querySelector('#cancelBtn').addEventListener("click", ()=>{
+    closeAddCmdPopup();
+});
+
+addCmdPopup.querySelector('#piece-1').addEventListener("change", addCmdPieceChangeListener);
+
+
+function addCmdPieceChangeListener(event){
+
+    if(event.target.value !== "-1"){
+         let template = addCmdPopup.querySelector("#form-group-piece-template");
+        let liste_cmd_kit = addCmdPopup.querySelector("#list-cmd-piece");
+
+        //On créer le nouvelle élement.
+        let node = document.createElement("div");
+        node.innerHTML = interpolate(template.innerHTML, {index:Date.now()});//On utilse Date.now() de manière a avoir un id unique
+
+        liste_cmd_kit.appendChild(node);
+
+        event.target.removeEventListener("change", addCmdPieceChangeListener);
+
+        //si on repasse une ligne kit à l'option par défaut --> alors on supprime la ligne de choix de kit
+        event.target.addEventListener("change", ()=>{
+            if(event.target.value === "-1"){
+                event.target.parentElement.parentElement.remove();
+            }
+        });
+
+        node.querySelector("select").addEventListener("change", addCmdPieceChangeListener);
+    }
+}
+
+
+function openAddCmdPopup(){
+    //on affiche le voile noir et la popup
+    addCmdPopup.style.display="block";
+    shadowBack.style.display = "block";
+}
+
+function closeAddCmdPopup(){
+    addCmdPopup.style.display="none";
+    shadowBack.style.display = "none";
+}

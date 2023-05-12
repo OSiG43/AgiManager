@@ -30,7 +30,7 @@ def getPiecesKit(id_kit) :
     lignes = cur.fetchall()
     return lignes
 
-def getAllKitCmd(order_by="status='Reçu'"):
+def getAllAgileanCmd(order_by="status='Reçu'"):
     con = get_db()
     cur = con.cursor()
     cur.execute(f"SELECT * FROM Commande_Agilean ORDER BY {order_by}")
@@ -64,6 +64,34 @@ def getAllKitCmd(order_by="status='Reçu'"):
 
     return liste_cmds
 
+def getAllAgigreenCmd(order_by="status='Reçu'"):
+    con = get_db()
+    cur = con.cursor()
+    cur.execute(f"SELECT * FROM Commande_Agigreen ORDER BY {order_by}")
+    lignes = cur.fetchall()
+
+    # On initialise la liste des commandes avec des dictionnaires vides pour chaque commande c'est à dire chaque
+    # id distinct
+    # Il faut faire ça car la requete sql renvoie plusieurs ligne associé à la même commande dès lors qu'il y a
+    # plusieurs kits dans la commande. Cette requete à l'avantage de permettre la récupèration de toutes les infos
+    # en une seule requete
+    unique_cmds = list(dict.fromkeys([cmd["id"] for cmd in lignes]).keys())
+    liste_cmds = {id: {} for id in unique_cmds}
+
+    for cmd in lignes:
+        #on récupère la listes des pièces dans la commande
+        querry = "SELECT id_piece, Pieces.nom, quantite FROM Composition_greenCmd_piece JOIN Pieces on id_piece=Pieces.id WHERE id_cmd = ?"
+        cur.execute(querry, (cmd["id"],))
+        pieces = cur.fetchall()
+
+        liste_cmds[cmd["id"]]["id"] = cmd["id"]
+        liste_cmds[cmd["id"]]["status"] = cmd["status"]
+        liste_cmds[cmd["id"]]["h_achat"] = cmd["h_achat"]
+        liste_cmds[cmd["id"]]["h_recep"] = cmd["h_recep"]
+        liste_cmds[cmd["id"]]["pieces"] = [dict(piece) for piece in pieces]
+
+    return liste_cmds
+
 
 def getStock(id_piece):
     # Connexion à la base de données
@@ -80,23 +108,6 @@ def getStock(id_piece):
         return "La pièce avec l'ID " + str(id_piece) + " n'a pas été trouvée dans le stock Agilog."
     else:
         return result[0]
-
-
-def AddOption(ref, nom, id_piece=None):
-    # Connexion à la base de données
-    con = get_db()
-    cursor = con.cursor()
-
-    # Exécution de la requête SQL pour insérer une nouvelle option dans la table "Option"
-    query = "INSERT INTO Option (code_option, id_piece, nom_option) VALUES (?, ?, ?)"
-    cursor.execute(query, (ref, id_piece, nom))
-
-    # Validation de la transaction
-    con.commit()
-
-
-    # Message de confirmation
-    return "L'option avec le code " + str(ref) + " a été ajoutée à la base de données."
 
 
 def AddKit(nom):
@@ -192,6 +203,8 @@ def addAgileanCmd(kits_list, pieces_list):
 
     return cmd_id
 
+
+
 def changeAgileanCmdStatus(cmd_id, status):
     from agimanager.timer_utils import timer_get_elapsed_time
     h_to_update = {"En traitement": "h_production", "Envoyée": "h_envoi", "Reçu": "h_recep"}[status]
@@ -201,4 +214,37 @@ def changeAgileanCmdStatus(cmd_id, status):
     con.commit()
     #On renvoi 0 si erreur 1 si tout bon.
     return cur.rowcount
+
+def setAgigreenCmdSent(cmd_id):
+    from agimanager.timer_utils import timer_get_elapsed_time
+
+    con = get_db()
+    cur = con.cursor()
+    cur.execute(f"UPDATE Commande_Agigreen SET (status, h_recep) = (?,?) WHERE id = ?",
+                ('Livrée', floor(timer_get_elapsed_time()), cmd_id))
+    con.commit()
+    # On renvoi 0 si erreur 1 si tout bon.
+    return cur.rowcount
+
+
+def addAgigreenCmd(kits_list, pieces_list):
+    from agimanager.timer_utils import timer_get_elapsed_time
+    # Connexion à la base de données
+    con = get_db()
+    cursor = con.cursor()
+
+    # Insertion de la commande dans la table "Commande_Agilean"
+    query_cmd = "INSERT INTO Commande_Agigreen (h_achat) VALUES (?)"
+    cursor.execute(query_cmd, (floor(timer_get_elapsed_time()),))
+    cmd_id = cursor.lastrowid
+
+    # Insertion des kits dans la table "Composition_leanCmd_piece"
+    for piece in pieces_list:
+        query_option = "INSERT INTO Composition_greenCmd_piece (id_cmd, id_piece, quantite) VALUES (?, ?, ?)"
+        cursor.execute(query_option, (cmd_id, piece["id"], piece["quantite"]))
+
+    # Validation de la transaction
+    con.commit()
+
+    return cmd_id
 
