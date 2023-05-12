@@ -67,6 +67,16 @@ def copy_empty_bdd():
 
     return redirect(url_for('admin'))
 
+@app.route('/init_stock')
+def init_stock():
+    #on met le stock de toutes les pièces à 100
+    from agimanager.request import getPieceList, AddStock, clearStock
+    pieces = getPieceList()
+    clearStock()
+    for piece in pieces:
+        AddStock(piece["id"], 100)
+    return redirect(url_for('admin'))
+
 #On lance l'application
 if __name__ == '__main__':
     from agimanager.db_utils import init_db, get_db

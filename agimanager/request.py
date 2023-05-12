@@ -159,22 +159,36 @@ def AddPieceInKit(id_kit, id_piece, qts):
         id_piece) + " a été ajoutée à la base de données."
 
 
-def AddStock(id_piece, qts, seuil_cmd):
+def AddStock(id_piece, qts):
     # Connexion à la base de données
     con = get_db()
     cursor = con.cursor()
 
     # Exécution de la requête SQL pour insérer une nouvelle entrée dans la table "stock_agilog"
-    query = "INSERT INTO stock_agilog (id_piece, quantite, seuil_commande) VALUES (?, ?, ?)"
-    cursor.execute(query, (id_piece, qts, seuil_cmd))
+    query = "INSERT INTO stock_agilog (id_piece, quantite) VALUES (?, ?)"
+    cursor.execute(query, (id_piece, qts))
 
     # Validation de la transaction
     con.commit()
 
 
     # Message de confirmation
-    return "L'entrée avec l'id_piece " + str(id_piece) + ", la quantité " + str(
-        qts) + " et le seuil de commande " + str(seuil_cmd) + " a été ajoutée à la base de données."
+    return cursor.rowcount
+
+def clearStock():
+    # Connexion à la base de données
+    con = get_db()
+    cursor = con.cursor()
+
+    # Exécution de la requête SQL pour supprimer toutes les entrées de la table "stock_agilog"
+    query = "DELETE FROM stock_agilog"
+    cursor.execute(query)
+
+    # Validation de la transaction
+    con.commit()
+
+    # Message de confirmation
+    return cursor.rowcount
 
 
 def addAgileanCmd(kits_list, pieces_list):
@@ -204,6 +218,28 @@ def addAgileanCmd(kits_list, pieces_list):
     return cmd_id
 
 
+def removeCmdPieceFromStock(cmd_id):
+    # Connexion à la base de données
+    con = get_db()
+    cursor = con.cursor()
+
+    # Récupération des pièces de la commande
+    query = "SELECT id_piece, quantite FROM Composition_leanCmd_piece WHERE id_cmd = ?"
+    cursor.execute(query, (cmd_id,))
+    pieces = cursor.fetchall()
+    #Récupération des pièces dans les kits
+    query = "SELECT id_piece, quantite FROM Composition_leanCmd_kit JOIN composition_kit ON Composition_leanCmd_kit.id_kit = composition_kit.id_kit WHERE id_cmd = ?"
+    cursor.execute(query, (cmd_id,))
+    pieces += cursor.fetchall()
+
+    # Mise à jour du stock pour chaque pièce
+    for piece in pieces:
+        query = "UPDATE Stock_Agilog SET quantite = quantite - ? WHERE id_piece = ?"
+        cursor.execute(query, (piece[1], piece[0]))
+
+    # Validation de la transaction
+    con.commit()
+
 
 def changeAgileanCmdStatus(cmd_id, status):
     from agimanager.timer_utils import timer_get_elapsed_time
@@ -212,6 +248,10 @@ def changeAgileanCmdStatus(cmd_id, status):
     cur = con.cursor()
     cur.execute(f"UPDATE Commande_Agilean SET (status,{h_to_update}) = (?,?) WHERE id = ?", (status, floor(timer_get_elapsed_time()), cmd_id))
     con.commit()
+
+    if status == "Reçu":
+        removeCmdPieceFromStock(cmd_id)
+
     #On renvoi 0 si erreur 1 si tout bon.
     return cur.rowcount
 
