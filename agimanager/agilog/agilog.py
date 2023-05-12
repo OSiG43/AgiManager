@@ -38,7 +38,8 @@ def cmds_agigreen_ajax():
 
     return jsonify(list(liste_cmds.values()))
 
-@agilog_bp.route('/cmd_agigreen',methods=('GET', 'POST'))
+
+@agilog_bp.route('/cmds_agigreen', methods=('GET', 'POST'))
 def cmd_agigreen():
     from agimanager.request import getAllAgigreenCmd, getPieceList, addAgigreenCmd
 
@@ -71,4 +72,20 @@ def cmd_agigreen():
     liste_pieces = getPieceList()
 
     return render_template('gestion_commandes_agigreen.html', liste_cmds=liste_cmds, liste_pieces=liste_pieces)
+
+
+@agilog_bp.route("/check_if_cmd_is_needed", methods=('POST',))
+def check_if_cmd_is_needed():
+    from agimanager.request import getPieceNeedCmd
+    if len(getPieceNeedCmd())!=0:
+        return "True"
+    return "False"
+
+@agilog_bp.route("/order_piece_need_cmd", methods=('POST',))
+def order_piece_need_cmd():
+    from agimanager.request import getPieceNeedCmd,addAgigreenCmd
+    pieces = getPieceNeedCmd()
+    if len(pieces) != 0:
+        addAgigreenCmd(pieces)
+    return "OK"
 

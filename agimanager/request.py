@@ -240,6 +240,26 @@ def removeCmdPieceFromStock(cmd_id):
     # Validation de la transaction
     con.commit()
 
+#Ajoute au stock les pièces d'une commande Agigreen
+def addCmdPieceToStock(cmd_id):
+    # Connexion à la base de données
+    con = get_db()
+    cursor = con.cursor()
+
+    # Récupération des pièces de la commande
+    query = "SELECT id_piece, quantite FROM Composition_greenCmd_piece WHERE id_cmd = ?"
+    cursor.execute(query, (cmd_id,))
+    pieces = cursor.fetchall()
+
+    # Mise à jour du stock pour chaque pièce
+    for piece in pieces:
+        query = "UPDATE Stock_Agilog SET quantite = quantite + ? WHERE id_piece = ?"
+        cursor.execute(query, (piece[1], piece[0]))
+
+    # Validation de la transaction
+    con.commit()
+
+
 
 def changeAgileanCmdStatus(cmd_id, status):
     from agimanager.timer_utils import timer_get_elapsed_time
@@ -249,7 +269,7 @@ def changeAgileanCmdStatus(cmd_id, status):
     cur.execute(f"UPDATE Commande_Agilean SET (status,{h_to_update}) = (?,?) WHERE id = ?", (status, floor(timer_get_elapsed_time()), cmd_id))
     con.commit()
 
-    if status == "Reçu":
+    if status == "En traitement":
         removeCmdPieceFromStock(cmd_id)
 
     #On renvoi 0 si erreur 1 si tout bon.
@@ -262,12 +282,17 @@ def setAgigreenCmdSent(cmd_id):
     cur = con.cursor()
     cur.execute(f"UPDATE Commande_Agigreen SET (status, h_recep) = (?,?) WHERE id = ?",
                 ('Livrée', floor(timer_get_elapsed_time()), cmd_id))
+
+    #On update le stock
+    addCmdPieceToStock(cmd_id)
+
     con.commit()
+
     # On renvoi 0 si erreur 1 si tout bon.
     return cur.rowcount
 
 
-def addAgigreenCmd(kits_list, pieces_list):
+def addAgigreenCmd(pieces_list):
     from agimanager.timer_utils import timer_get_elapsed_time
     # Connexion à la base de données
     con = get_db()
@@ -287,4 +312,20 @@ def addAgigreenCmd(kits_list, pieces_list):
     con.commit()
 
     return cmd_id
+
+#Récupère les pièces qui necessite une commande auprès d'agigreen
+def getPieceNeedCmd():
+    con = get_db()
+    cursor = con.cursor()
+    #Il faut également prendre en compte les pièces qui sont dans des commandes dont le status est "En traitement"
+    #on veut donc selectionner les pièces dont la quantité + la quantité dans les commandes en traitement est inférieur au seuil de commande
+    query = """SELECT id_piece as id, seuil_recompletion-quantite as quantite 
+                FROM Stock_Agilog JOIN Pieces ON id_piece=Pieces.id 
+                WHERE quantite + (SELECT IFNULL(SUM(quantite),0)
+                                FROM Composition_greenCmd_piece 
+                                JOIN Commande_Agigreen ON id_cmd=Commande_Agigreen.id 
+                                WHERE status='En traitement' AND id_piece=Stock_Agilog.id_piece) <= seuil_commande"""
+    cursor.execute(query)
+    pieces = cursor.fetchall()
+    return pieces
 

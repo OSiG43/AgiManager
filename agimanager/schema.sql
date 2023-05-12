@@ -29,14 +29,6 @@ CREATE TABLE IF NOT EXISTS "Composition_Kit" (
 	FOREIGN KEY("id_Kit") REFERENCES "Kits"("id"),
 	FOREIGN KEY("id_piece") REFERENCES "Pieces"("id")
 );
-DROP TABLE IF EXISTS "Pieces";
-CREATE TABLE IF NOT EXISTS "Pieces" (
-	"id"	INTEGER NOT NULL UNIQUE,
-	"ref"	TEXT NOT NULL,
-	"nom"	TEXT NOT NULL,
-	"seuil_commande"	INTEGER,
-	PRIMARY KEY("id" AUTOINCREMENT)
-);
 DROP TABLE IF EXISTS "Composition_greenCmd_piece";
 CREATE TABLE IF NOT EXISTS "Composition_greenCmd_piece" (
 	"id_cmd"	INTEGER,
@@ -63,19 +55,29 @@ CREATE TABLE IF NOT EXISTS "Commande_Agilean" (
 	"h_recep"	INTEGER DEFAULT NULL,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
-DROP TABLE IF EXISTS "Stock_Agilog";
-CREATE TABLE IF NOT EXISTS "Stock_Agilog" (
-	"id"	INTEGER NOT NULL UNIQUE,
-	"quantite"	INTEGER NOT NULL,
-	"id_piece"	INTEGER,
-	PRIMARY KEY("id")
-);
 DROP TABLE IF EXISTS "Commande_Agigreen";
 CREATE TABLE IF NOT EXISTS "Commande_Agigreen" (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"status"	TEXT DEFAULT 'En traitement',
 	"h_achat"	INTEGER,
 	"h_recep"	INTEGER,
+	PRIMARY KEY("id" AUTOINCREMENT)
+);
+DROP TABLE IF EXISTS "Stock_Agilog";
+CREATE TABLE IF NOT EXISTS "Stock_Agilog" (
+	"id"	INTEGER NOT NULL UNIQUE,
+	"quantite"	INTEGER NOT NULL,
+	"id_piece"	INTEGER,
+	FOREIGN KEY("id_piece") REFERENCES "Pieces"("id"),
+	PRIMARY KEY("id")
+);
+DROP TABLE IF EXISTS "Pieces";
+CREATE TABLE IF NOT EXISTS "Pieces" (
+	"id"	INTEGER NOT NULL UNIQUE,
+	"ref"	TEXT NOT NULL,
+	"nom"	TEXT NOT NULL,
+	"seuil_commande"	INTEGER,
+	"seuil_recompletion"	INTEGER,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
 COMMIT;

@@ -3,6 +3,15 @@
 {% block style %}
 <link rel="stylesheet" href="../static/agilean_cmd.css" type="text/css" >
 <link rel="stylesheet" href="../static/popup.css" type="text/css" >
+
+<!-- CSS -->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+<!-- Default theme -->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+<!-- Semantic UI theme -->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css"/>
+<!-- Bootstrap theme -->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css"/>
 {% endblock %}
 
 {% block content %}
@@ -118,8 +127,10 @@
 {% endblock %}
 
 {% block script %}
+<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 
 <script>
+
     function toggleExpansion(event) {
         //On récupère l'élément à afficher/masquer --> il s'agit de l'élément de classe "contenu_cmd" qui est le frère de l'élément cliqué
         var contenu_cmd = event.target.parentNode.parentNode.getElementsByClassName("contenu_cmd")[0];
@@ -260,6 +271,47 @@
     }
     window.setInterval(reloadCmds, 5000);
 
+    function orderPieceNeedCmd(){
+        fetch("{{url_for('agilog.order_piece_need_cmd')}}", {
+        method : "POST",
+        }).then(
+            response => response.text()
+        ).then(
+            html => {
+                console.log(html);
+                if(html !== "-1"){
+                    alertify.success("Commande passée auprès d'Agigreen",5);
+                }
+
+            }
+        );
+    }
+
+    function checkIfCmdIsNeeded(){
+        fetch("{{url_for('agilog.check_if_cmd_is_needed')}}", {
+        method : "POST",
+        }).then(
+            response => response.text()
+        ).then(
+            html => {
+                console.log(html);
+                if(html === "True"){
+                    var notification = alertify.warning("Seuil de commande atteint. <br> Passer commande auprès d'Agigreen",5,
+                    (isClicked)=>{
+                        if(isClicked){
+                            orderPieceNeedCmd();
+                            alertify.dismissAll();
+                        }
+
+                    });
+                }
+
+            }
+        );
+    }
+    window.setInterval(checkIfCmdIsNeeded, 5000);
+
+    //Cette fonction permet de changer le status d'une commande
     function changeCmdStatus(cmd_id, status){
             // On envoi une requête post à /receive_cmd avec l'id de la commande
             let new_status = (status === "En attente" ? "En traitement" : "Envoyée")
