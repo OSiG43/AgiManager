@@ -15,6 +15,9 @@
             <a href="{{url_for('reset_timer')}}">Reset timer</a>
         {% endif %}
         <span>Timer : {{elapsed_time}}</span>
+        <h2>BDD</h2>
+        <a href="{{url_for('copy_prefilled_bdd')}}">Charger la BDD pré-remplie</a>
+        <a href="{{url_for('copy_empty_bdd')}}">Charger la BDD vide</a>
     </div>
 {% endblock %}
 

@@ -1,8 +1,10 @@
 
 #Fichier d'initialisation de l'app flask
+import os
+import shutil
 import time
 
-from flask import Flask, render_template, url_for, redirect, g
+from flask import Flask, render_template, url_for, redirect, g, current_app
 
 from agimanager.agigreen.agigreen import agigreen_bp
 from agimanager.agilean.agilean import agilean_bp
@@ -48,9 +50,27 @@ def reset_timer():
     timer_reset()
     return redirect(url_for('admin'))
 
+@app.route('/copy_prefilled_bdd')
+def copy_prefilled_bdd():
+    db = get_db()
+    with app.open_resource('schema_rempli.sql', mode='r') as f:
+        db.cursor().executescript(f.read())
+    db.commit()
+    return redirect(url_for('admin'))
+
+@app.route('/copy_empty_bdd')
+def copy_empty_bdd():
+    db = get_db()
+    with app.open_resource('schema.sql', mode='r') as f:
+        db.cursor().executescript(f.read())
+    db.commit()
+
+    return redirect(url_for('admin'))
+
 #On lance l'application
 if __name__ == '__main__':
-    from agimanager.db_utils import init_db
+    from agimanager.db_utils import init_db, get_db
+
     init_db()
     app.run(debug=True, port=5678)
 
