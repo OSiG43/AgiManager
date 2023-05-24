@@ -159,6 +159,16 @@ def AddPieceInKit(id_kit, id_piece, qts):
         id_piece) + " a été ajoutée à la base de données."
 
 
+def setSeuils(id_piece, seuil_cmd, recompletion):
+    con = get_db()
+    cursor = con.cursor()
+
+    query = "UPDATE Pieces SET seuil_commande = ?, seuil_recompletion = ? WHERE id = ?"
+    cursor.execute(query, (seuil_cmd, recompletion, id_piece))
+    con.commit()
+
+    return cursor.rowcount
+
 def AddStock(id_piece, qts):
     # Connexion à la base de données
     con = get_db()

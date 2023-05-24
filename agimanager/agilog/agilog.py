@@ -46,14 +46,6 @@ def cmd_agigreen():
     if request.method == "POST":
         #request.form est de la forme suivante : ImmutableMultiDict([('kit-1', '5'), ('kit-qts-1', '1'),('kit-1683824743687', '2'), ('kit-qts-1683824743687', '3')])
         # ici, le kit 5 est commandé en 1 exemplaire et le kit 2 est commandé en 3 exemplaires
-        #On récupère la liste des kits sous la forme [{"id": "5", "qts": "1"}, {"id": "2", "qts": "3"}]
-        kit_list = []
-        for key, value in request.form.items():
-            if value == "-1":
-                continue
-            if key.startswith("kit-"):
-                index = key.lstrip("kit-")
-                kit_list.append({"id": value, "quantite": request.form[f"qts-kit-{index}"]})
 
         #Pareil avec les pieces
         piece_list = []
@@ -65,8 +57,8 @@ def cmd_agigreen():
                 piece_list.append({"id": value, "quantite": request.form[f"qts-piece-{index}"]})
 
         #Si il y a des kits ou des pièces à commander, on les ajoute à la base de donnée
-        if len(kit_list) != 0 or len(piece_list) != 0:
-            addAgigreenCmd(kit_list, piece_list)
+        if len(piece_list) != 0:
+            addAgigreenCmd(piece_list)
 
     liste_cmds = getAllAgigreenCmd()
     liste_pieces = getPieceList()

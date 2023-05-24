@@ -70,11 +70,12 @@ def copy_empty_bdd():
 @app.route('/init_stock')
 def init_stock():
     #on met le stock de toutes les pièces à 100
-    from request import getPieceList, AddStock, clearStock
+    from request import getPieceList, AddStock, clearStock, setSeuils
     pieces = getPieceList()
     clearStock()
     for piece in pieces:
         AddStock(piece["id"], 100)
+        setSeuils(piece["id"], 99, 1)
     return redirect(url_for('admin'))
 
 #On lance l'application
