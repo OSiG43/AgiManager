@@ -6,7 +6,7 @@ from flask import g
 
 
 def timer_start():
-    from agimanager.db_utils import get_db
+    from db_utils import get_db
 
     con = get_db()
     cur = con.cursor()
@@ -20,7 +20,7 @@ def timer_start():
     con.commit()
 
 def is_timer_running():
-    from agimanager.db_utils import get_db
+    from db_utils import get_db
 
     con = get_db()
     cur = con.cursor()
@@ -36,7 +36,7 @@ def is_timer_running():
 
 
 def timer_pause():
-    from agimanager.db_utils import get_db
+    from db_utils import get_db
 
     con = get_db()
     cur = con.cursor()
@@ -45,7 +45,7 @@ def timer_pause():
 
 
 def timer_reset():
-    from agimanager.db_utils import get_db
+    from db_utils import get_db
 
     con = get_db()
     cur = con.cursor()
@@ -54,7 +54,7 @@ def timer_reset():
 
 
 def timer_get_elapsed_time():
-    from agimanager.db_utils import get_db
+    from db_utils import get_db
 
     con = get_db()
     cur = con.cursor()

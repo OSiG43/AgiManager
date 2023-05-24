@@ -6,7 +6,7 @@ agilean_bp = Blueprint('agilean', __name__, template_folder='../templates/agilea
 
 @agilean_bp.route('/cmds_ajax')
 def cmds_ajax():
-    from agimanager.request import getAllAgileanCmd
+    from request import getAllAgileanCmd
     liste_cmds = getAllAgileanCmd()
 
     return jsonify(list(liste_cmds.values()))
@@ -14,7 +14,7 @@ def cmds_ajax():
 
 @agilean_bp.route('/suivi_cmd',methods=('GET', 'POST'))
 def suivi_cmd():
-    from agimanager.request import getAllAgileanCmd, getKitList, getPieceList, addAgileanCmd
+    from request import getAllAgileanCmd, getKitList, getPieceList, addAgileanCmd
 
     if request.method == "POST":
         #request.form est de la forme suivante : ImmutableMultiDict([('kit-1', '5'), ('kit-qts-1', '1'),('kit-1683824743687', '2'), ('kit-qts-1683824743687', '3')])
@@ -49,7 +49,7 @@ def suivi_cmd():
 
 @agilean_bp.route("/receive_cmd", methods=('POST',))
 def receive_cmd():
-    from agimanager.request import changeAgileanCmdStatus
+    from request import changeAgileanCmdStatus
     if changeAgileanCmdStatus(request.json["id"], "Reçu"):
         return "OK"
     else:

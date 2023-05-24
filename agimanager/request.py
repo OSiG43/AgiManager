@@ -1,6 +1,6 @@
 from math import floor
 
-from agimanager.db_utils import get_db
+from db_utils import get_db
 
 def getAllStock():
     con= get_db()
@@ -192,7 +192,7 @@ def clearStock():
 
 
 def addAgileanCmd(kits_list, pieces_list):
-    from agimanager.timer_utils import timer_get_elapsed_time
+    from timer_utils import timer_get_elapsed_time
     # Connexion à la base de données
     con = get_db()
     cursor = con.cursor()
@@ -262,7 +262,7 @@ def addCmdPieceToStock(cmd_id):
 
 
 def changeAgileanCmdStatus(cmd_id, status):
-    from agimanager.timer_utils import timer_get_elapsed_time
+    from timer_utils import timer_get_elapsed_time
     h_to_update = {"En traitement": "h_production", "Envoyée": "h_envoi", "Reçu": "h_recep"}[status]
     con = get_db()
     cur = con.cursor()
@@ -276,7 +276,7 @@ def changeAgileanCmdStatus(cmd_id, status):
     return cur.rowcount
 
 def setAgigreenCmdSent(cmd_id):
-    from agimanager.timer_utils import timer_get_elapsed_time
+    from timer_utils import timer_get_elapsed_time
 
     con = get_db()
     cur = con.cursor()
@@ -293,7 +293,7 @@ def setAgigreenCmdSent(cmd_id):
 
 
 def addAgigreenCmd(pieces_list):
-    from agimanager.timer_utils import timer_get_elapsed_time
+    from timer_utils import timer_get_elapsed_time
     # Connexion à la base de données
     con = get_db()
     cursor = con.cursor()

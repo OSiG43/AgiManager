@@ -2,7 +2,7 @@ import os
 import sqlite3
 
 from flask import g
-from agimanager.app import app
+from app import app
 
 
 
